@@ -1,0 +1,54 @@
+version: '3.8'
+
+x-app: &x-app
+  env_file:
+    - .env
+  build:
+    context: .
+  volumes:
+    - .:/app
+
+services:
+  app:
+    <<: *x-app
+    command: ./bin/dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+      - redis
+      - sidekiq
+    tty: true
+
+  sidekiq:
+    <<: *x-app
+    environment:
+      REDIS_PROVIDER: REDIS_URL
+    command: ["./bin/bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
+    ports: []
+    depends_on:
+      - db
+      - redis
+
+  redis:
+    image: redis:6.0-alpine
+    command: ["redis-server"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "4432:5432"
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    restart: always
+volumes:
+  postgres_volume:
+  redis-data:
+

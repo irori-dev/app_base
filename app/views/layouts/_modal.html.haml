@@ -1,0 +1,7 @@
+= turbo_frame_tag "modal" do
+  %div{'data-controller' => "modal"}
+    / Main modal
+    .h-screen.w-full.fixed.left-0.top-0.flex.justify-center.items-center.bg-black.bg-opacity-50{ data: { 'modal-target': 'modal' } }
+      / modal
+      .bg-white.rounded.shadow-lg{:class => "w-10/12 md:w-1/2"}
+        = yield

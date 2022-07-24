@@ -1,0 +1,72 @@
+# Required minimum dip version
+version: '7.1'
+
+environment:
+  COMPOSE_EXT: development
+
+compose:
+  files:
+    - docker/docker-compose.yml
+  project_name: app_base
+
+interaction:
+  shell: &shell
+    description: Open the Bash shell in app's container
+    service: app
+    command: bash
+    compose:
+      run_options: [no-deps]
+
+  sh:
+    <<: *shell
+
+  bundle:
+    description: Run Bundler commands
+    service: app
+    command: ./bin/bundle
+
+  rspec:
+    description: Run Rspec commands
+    service: app
+    environment:
+      RAILS_ENV: test
+    command: bundle exec rspec
+
+  rails:
+    description: Run Rails commands
+    service: app
+    command: ./bin/rails
+    subcommands:
+      s:
+        description: Run Rails server at http://localhost:3000
+        service: app
+        compose:
+          run_options: [service-ports, use-aliases]
+
+  clean_cache:
+    description: Delete cache files on the host machine
+    command: rm -rf $(pwd)/tmp/cache/*
+
+  clean:
+    description: Delete db data on the host machine
+    command: rm -rf $(pwd)/tmp/cache/* && rm -rf $(pwd)/tmp/db/*
+
+  edit_credentials:
+    description: Edit credentials
+    service: app
+    command: bash -c 'RAILS_ENV=$RAILS_ENV SECRET_ENV="1" EDITOR=vim bundle exec rails credentials:edit -e $RAILS_ENV'
+    compose:
+      run_options: [no-deps]
+
+  attach:
+    description: Attach to app container
+    command: docker attach app_base-app-1
+
+provision:
+  - dip build
+  - dip compose up -d db
+  - dip rails db:drop
+  - dip rails db:create
+  - dip rails ridgepole:apply
+  - dip RAILS_ENV=test rails ridgepole:apply
+  # - dip rails db:seed_fu

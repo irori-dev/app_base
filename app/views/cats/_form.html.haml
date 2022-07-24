@@ -1,0 +1,11 @@
+= turbo_frame_tag cat do
+  / modal header
+  .border-b.px-4.py-2.flex.justify-between.items-center
+    %h3.font-semibold.text-lg Text
+    %button.text-black{ data: { action: "click->modal#close" }} &cross;
+  / modal body
+  .p-3
+    = form_with(model: cat, class: 'w-full', data: { action: 'turbo:submit-end->modal#successClose'}) do |f|
+      = f.text_field :name
+      = f.number_field :age
+      = f.submit

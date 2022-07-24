@@ -1,0 +1,56 @@
+.w-full#flash
+  = render 'layouts/flash', flash: flash
+
+.w-full
+  = search_form_for @search, html: { data: {turbo_frame: 'cats-index',controller: "form", action: "input->form#submit"} } do |f|
+    .grid.grid-cols-12.gap-6
+      .col-span-4
+        = f.label :name_cont, "名前", class: 'block text-sm font-medium text-gray-700'
+        = f.search_field :name_cont, class: 'mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
+      .col-span-4
+        = f.label :age_eq, "年齢", class: 'block text-sm font-medium text-gray-700'
+        = f.search_field :age_eq, class: 'mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md'
+      .col-span-4
+        -# = f.submit class: 'inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+        = link_to "クリア", cats_path
+.w-full
+  .flex.justify-end
+    %div{ class: 'w-1/6' }
+      = link_to "新規作成", new_cat_path, {class: 'inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500', data: { turbo_frame: 'modal' }}
+= turbo_frame_tag 'cats-index', class: 'w-full', data: { turbo_action: :advance } do
+  .p-2.flex
+    %div{ class: 'w-1/6' }
+      = sort_link @search, :id
+    %div{ class: 'w-1/3' }
+      = sort_link @search, :name
+    %div{ class: 'w-1/3' }
+      = sort_link @search, :age
+    %div{ class: 'w-1/6' }
+      Actions
+  #cats
+    = turbo_frame_tag "cats-page-#{@cats.current_page}" do
+      = render @cats
+      = turbo_frame_tag "cats-page-#{@cats.next_page}", loading: :lazy, src: path_to_next_page(@cats)
+
+  -# .w-full
+  -#   .bg-white.px-4.py-3.flex.items-center.justify-between.border-t.border-gray-200.sm:px-6
+  -#     .flex-1.flex.justify-between.sm:hidden
+  -#       = link_to 'Previous', '#', class: 'relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50'
+  -#       = link_to 'Next', '#', class: 'relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50'
+  -#       -# %a.relative.inline-flex.items-center.px-4.py-2.border.border-gray-300.text-sm.font-medium.rounded-md.text-gray-700.bg-white.hover:bg-gray-50{:href => "#"} Previous
+  -#       -# %a.ml-3.relative.inline-flex.items-center.px-4.py-2.border.border-gray-300.text-sm.font-medium.rounded-md.text-gray-700.bg-white.hover:bg-gray-50{:href => "#"} Next
+  -#     .hidden.sm:flex-1.sm:flex.sm:items-center.sm:justify-between
+  -#       %div
+  -#         %p.text-sm.text-gray-700
+  -#           Showing
+  -#           %span.font-medium
+  -#             = (@cats.current_page - 1) * @cats.limit_value + 1
+  -#           to
+  -#           %span.font-medium
+  -#             = [@cats.current_page * @cats.limit_value, @cats.total_count].min
+  -#           of
+  -#           %span.font-medium
+  -#           = @cats.total_count
+  -#           results
+  -#       %div
+  -#         = paginate @cats, outer_window: 1, window: 1

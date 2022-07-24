@@ -1,0 +1,3 @@
+Pathname.new(__FILE__).dirname.glob("*.schema").each do |path|
+  require path.realpath.to_s
+end
