@@ -1,8 +1,6 @@
 version: '3.8'
 
 x-app: &x-app
-  env_file:
-    - .env
   build:
     context: .
   volumes:
@@ -19,11 +17,13 @@ services:
       - redis
       - sidekiq
     tty: true
+    stdin_open: true
 
   sidekiq:
     <<: *x-app
     environment:
-      REDIS_PROVIDER: REDIS_URL
+      REDISTOGO_URL: redis://redis:6379
+      REDIS_PROVIDER: REDISTOGO_URL
     command: ["./bin/bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
     ports: []
     depends_on:

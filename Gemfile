@@ -86,10 +86,6 @@ gem 'haml-rails'
 # for metas
 gem 'meta-tags'
 
-# for env
-gem 'config'
-gem 'dotenv-rails'
-
 # for Worker
 gem 'sidekiq'
 

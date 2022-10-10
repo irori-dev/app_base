@@ -36,3 +36,7 @@
 .env
 .env.*
 !.env.sample
+
+.vscode/*
+!.vscode/launch.json
+!.vscode/settings.json
