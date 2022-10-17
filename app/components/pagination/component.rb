@@ -14,14 +14,12 @@ class Pagenation::Component < ViewComponent::Base
   def display_pages
     if @total_pages <= 5
       (1..@total_pages).to_a
+    elsif @current_page <= 5
+      (1..10).to_a
+    elsif @current_page >= @total_pages - 5
+      (@total_pages - 9..@total_pages).to_a
     else
-      if @current_page <= 5
-        (1..10).to_a
-      elsif @current_page >= @total_pages - 5
-        (@total_pages - 9..@total_pages).to_a
-      else
-        (@current_page - 5..@current_page + 5).to_a
-      end
+      (@current_page - 5..@current_page + 5).to_a
     end
   end
 end
