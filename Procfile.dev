@@ -1,2 +1,2 @@
-web: rdbg --open=vscode --nonstop -c -- bin/rails s -p 3000 -b '0.0.0.0'
+web: /bin/sh -c "rm -f tmp/pids/server.pid && rdbg --open=vscode --nonstop -c -- bin/rails s -p 3000 -b '0.0.0.0'"
 css: bin/rails tailwindcss:watch
