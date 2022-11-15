@@ -47,12 +47,3 @@ hamlを使用しています。
 `cats`のresourcesを作成しています。
 参考にしてみてください。
 
-## TODO
-
-- [ ] Tailwindのoddが効かない件の調査
-- [ ] rubocopの設定
-- [ ] RSpec
-- [ ] ViewComponent周りの設定
-- [ ] CIの設定
-- [ ] ドキュメンテーション
-- [ ] Docker環境上のdebagger使用方法
