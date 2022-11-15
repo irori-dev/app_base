@@ -1,2 +1,3 @@
-= turbo_stream.replace @cat
+= turbo_stream.replace @cat do
+  = render Cat::Component.new(cat: @cat)
 = turbo_stream.update "flash", partial: "layouts/flash"
