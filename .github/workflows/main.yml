@@ -18,10 +18,10 @@ jobs:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
           payload: |
             {
-              "text": "SlackApp Deployment started (In Progress)",
+              "text": "AppBase test started (In Progress)",
               "attachments": [
                 {
-                  "pretext": "Deployment started",
+                  "pretext": "Test started",
                   "color": "ffc107",
                   "fields": [
                     {
