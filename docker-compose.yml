@@ -16,8 +16,14 @@ services:
       - db
       - redis
       - sidekiq
+      - chrome
     tty: true
     stdin_open: true
+    environment:
+      PORT: 3000
+      HOST: localhost
+      SELENIUM_DRIVER_URL: http://chrome:4444/wd/hub
+      REDIS_URL: redis://redis:6379
 
   sidekiq:
     <<: *x-app
@@ -48,6 +54,12 @@ services:
     volumes:
       - postgres_volume:/var/lib/postgresql/data
     restart: always
+  
+  chrome:
+    image: seleniarm/standalone-chromium
+    shm_size: 2g
+    ports:
+      - 4444:4444
 volumes:
   postgres_volume:
   redis-data:

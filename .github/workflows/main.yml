@@ -7,31 +7,103 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup docker
-      shell: bash
-      run: |
-        docker-compose build
-        docker-compose run app bundle install
-        docker-compose run app bundle exec rails assets:precompile
-        docker-compose up -d
-        docker-compose exec -T app bundle exec rails db:create
-    - name: Run rubocop
-      shell: bash
-      run: |
-        docker-compose exec -T app bundle exec rubocop
-    - name: Run rspec
-      shell: bash
-      run: |
-        docker-compose exec -T app bundle exec rspec
-    - name: Notify deployment
-      uses: 8398a7/action-slack@v3.8.0
-      with:
-        status: ${{ job.status }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      if: always()
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Post Slack Message
+        id: slack
+        uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          payload: |
+            {
+              "text": "SlackApp Deployment started (In Progress)",
+              "attachments": [
+                {
+                  "pretext": "Deployment started",
+                  "color": "ffc107",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "short": true,
+                      "value": "In Progress"
+                    }
+                  ]
+                }
+              ]
+            }
+      - name: Setup docker
+        shell: bash
+        run: |
+          docker-compose build
+          docker-compose run app bundle install
+          docker-compose run app bundle exec rails assets:precompile
+          docker-compose up -d
+          docker-compose exec -T app bundle exec rails db:create
+      - name: Run rubocop
+        shell: bash
+        run: |
+          docker-compose exec -T app bundle exec rubocop
+      - name: Run rspec
+        shell: bash
+        run: |
+          docker-compose exec -T app bin/rspec
+      - name: Notify deployment
+        uses: 8398a7/action-slack@v3.8.0
+        with:
+          status: ${{ job.status }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
+      - name: Update Slack message if test is failed
+        if: failure()
+        uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          update-ts: ${{ steps.slack.outputs.ts }}
+          payload: |
+            {
+              "text": "AppBase test failed",
+              "attachments": [
+                {
+                  "pretext": "Test finished",
+                  "color": "dc3545",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "short": true,
+                      "value": "Failed"
+                    }
+                  ]
+                }
+              ]
+            }
+      - name: Update Slack message if test is successful
+        if: success()
+        uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN}}
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          update-ts: ${{ steps.slack.outputs.ts }}
+          payload: |
+            {
+              "text": "AppBase test succeeded",
+              "attachments": [
+                {
+                  "pretext": "Test finished",
+                  "color": "28a745",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "short": true,
+                      "value": "Success"
+                    }
+                  ]
+                }
+              ]
+            }
