@@ -10,6 +10,7 @@ Railsアプリケーションを作成するための土台となるリポジト
 ## 開発環境
 
 [dip](https://github.com/bibendi/dip)を使用して`docker compose`をwrapperしています。
+(VS Codeを使用している場合はdip upは使用しない方がいいです。Debugの項目を見てみてください。)
 
 ## 設定の仕様
 
@@ -41,6 +42,16 @@ importmap-railsがベースなのでnode_modulesは必要ありません。幸�
 ### view
 
 hamlを使用しています。
+
+### 環境変数
+
+`rails:credentials`を使用しています。
+`master.key`が必要になるので持っている人に聞いてください
+
+## Debug
+
+[こちら](https://corporate.irori.dev/posts/rails-debug-devcontainer-with-foreman)を参考にしてみてください。
+
 
 ## サンプル実装
 
