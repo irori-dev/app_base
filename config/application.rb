@@ -12,12 +12,22 @@ module Myapp
     config.load_defaults 7.0
     config.active_job.queue_adapter = :sidekiq
 
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
+    config.time_zone = 'Tokyo'
+
+    config.i18n.default_locale = :ja
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
+
+    config.autoload_paths += %W[#{config.root}/lib]
+    config.allow_origins = Rails.application.credentials.dig(:allow_origins) || []
+
+    Rails.application.routes.default_url_options = if Rails.env == 'development' || Rails.env == 'test'
+      { host: ENV['HOST'], port: ENV['PORT'] }
+    else
+      { host: Rails.application.credentials.dig(:base, :host), protocol: 'https' }
+    end
   end
+end
+
+Rails.application.reloader.to_prepare do
+  ActiveStorage::Blob
 end
