@@ -6,3 +6,6 @@
     %main.container.mx-auto
       = yield
     =  turbo_frame_tag "modal"
+    = turbo_frame_tag "toasts", class: "fixed bottom-0 right-0 z-50 p-4" do
+      - flash.each do |key, value|
+        = render Toast::Component.new(type: key.to_sym, message: value)
