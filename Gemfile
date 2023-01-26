@@ -85,9 +85,6 @@ gem 'ridgepole'
 # use haml
 gem 'haml-rails'
 
-# for metas
-gem 'meta-tags'
-
 # for Worker
 gem 'sidekiq'
 

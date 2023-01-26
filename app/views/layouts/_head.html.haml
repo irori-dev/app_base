@@ -1,0 +1,28 @@
+- default_title = "AppBase | アプリの簡単な説明"
+- default_description = "Railsアプリケーションを作成するための土台となるリポジトリです。"
+- default_image = "https://corporate.irori.dev/assets/ogp.webp"
+
+
+%title
+  = content_for?(:title) ? yield(:title) : default_title
+%meta{content: "description", name: content_for?(:description) ? yield(:description) : default_description}
+%meta{content: "width=device-width,initial-scale=1", name: "viewport"}
+%meta{content: "no-cache", name: "turbo-cache-control"}
+= csrf_meta_tags
+= csp_meta_tag
+= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload"
+= stylesheet_link_tag "application", "data-turbo-track": "reload"
+= javascript_importmap_tags
+%link{href: "https://fonts.googleapis.com", rel: "preconnect"}/
+%link{crossorigin: "", href: "https://fonts.gstatic.com", rel: "preconnect"}/
+%link{href: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&display=swap", rel: "stylesheet"}/
+%meta{content: "ja_JP", property: "og:locale"}/
+%meta{content: "website", property: "og:type"}/
+%meta{content: "保育士リンク", property: "og:site_name"}/
+%meta{content: content_for?(:title) ? yield(:title) : default_title, property: "og:title"}/
+%meta{content: content_for?(:description) ? yield(:description) : default_description, property: "og:description"}/
+%meta{content: content_for?(:image) ? yield(:image) : default_image, property: "og:image"}/
+%meta{content: "https://hoikushi-link.com/", property: "og:url"}/
+%meta{content: "summary_large_image", property: "twitter:card"}/
+%meta{content: "@irori_dev", property: "twitter:site"}/
+= yield :other_head
