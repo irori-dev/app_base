@@ -1,0 +1,10 @@
+.flex.items-center.w-full.max-w-xs.p-4.mb-4.text-gray-500.bg-white.rounded-lg.shadow{:role => "alert", "data-controller" => "removable", "data-removable-target" => "object"}
+  %div{class: icon_wrapper_classes}
+    %svg.w-6.h-6{:fill => "none", :stroke => "currentColor", "stroke-width" => "1.5", :viewbox => "0 0 24 24", :xmlns => "http://www.w3.org/2000/svg"}
+      = render icon
+  .ml-3.text-sm
+    = @message
+  %button.ml-auto.bg-white.text-gray-400.hover:text-gray-900.rounded-lg.focus:ring-2.focus:ring-gray-300.hover:bg-gray-100.inline-flex.h-8.w-8{"aria-label" => "Close", :class => "-mx-1.5 -my-1.5 p-1.5", "data-dismiss-target" => "#toast-success", :type => "button", "data-action" => "click->removable#remove"}
+    %span.sr-only Close
+    %svg.w-6.h-6{:fill => "none", :stroke => "currentColor", "stroke-width" => "1.5", :viewbox => "0 0 24 24", :xmlns => "http://www.w3.org/2000/svg"}
+      = render 'svgs/x_mark'
