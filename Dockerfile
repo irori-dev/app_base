@@ -1,11 +1,11 @@
-FROM ruby:3.1.2-slim
+FROM ruby:3.2.1-slim
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev vim git imagemagick
 RUN mkdir /app
 WORKDIR /app
 ADD Gemfile /app/Gemfile
 ADD Gemfile.lock /app/Gemfile.lock
 
-ENV BUNDLER_VERSION 2.3.23
+ENV BUNDLER_VERSION 2.4.10
 RUN gem update --system \
     && gem install bundler -v $BUNDLER_VERSION \
     && bundle install -j 4
