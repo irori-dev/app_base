@@ -3,6 +3,7 @@
   "service": "app",
   "workspaceFolder": "/app",
   "extensions": [
-    "KoichiSasada.vscode-rdbg"
+    "KoichiSasada.vscode-rdbg",
+    "GitHub.copilot"
   ]
 }
