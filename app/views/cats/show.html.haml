@@ -1,5 +1,0 @@
-= render Cat::Component.new(cat: @cat)
-%div
-  = link_to "編集", edit_cat_path(@cat)
-  = link_to "戻る", cats_path
-  = button_to "削除", @cat, method: :delete

@@ -1,3 +1,5 @@
 = turbo_stream.replace @cat do
-  = render Cat::Component.new(cat: @cat)
-= turbo_stream.update "flash", partial: "layouts/flash"
+  = render CatCard::Component.new(cat: @cat)
+= turbo_stream.update :toasts do
+  - flash.each do |key, value|
+    = render Toast::Component.new(type: key.to_sym, message: value)
