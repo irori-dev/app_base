@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Toast::Component, type: :component do
   subject { render_inline(described_class.new(type:, message:)) }
-  let(:type) { :success }
+  let(:type) { :notice }
   let(:message) { 'Success' }
 
   it 'renders message' do
@@ -10,17 +10,17 @@ RSpec.describe Toast::Component, type: :component do
     expect(page).to have_text message
   end
 
-  context 'when type is success' do
-    it 'renders success toast' do
+  context 'when type is notice' do
+    it 'renders notice toast' do
       subject
       expect(page).to have_css 'div.bg-green-100.text-green-500'
     end
   end
 
-  context 'when type is error' do
-    let(:type) { :error }
+  context 'when type is alert' do
+    let(:type) { :alert }
 
-    it 'renders error toast' do
+    it 'renders alert toast' do
       subject
       expect(page).to have_css 'div.bg-red-100.text-red-500'
     end
