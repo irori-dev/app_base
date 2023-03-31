@@ -1,14 +1,14 @@
 class Toast::Component < ViewComponent::Base
   include Turbo::FramesHelper
 
-  def initialize(type: :success, message: 'Success')
+  def initialize(message:, type: :notice)
     @type = type
     @message = message
   end
 
   def icon
     case @type
-    when :error
+    when :alert
       'svgs/x_mark'
     when :warning
       'svgs/exclamation_triangle'
@@ -28,9 +28,9 @@ class Toast::Component < ViewComponent::Base
       rounded-lg
     ]
     particular_classes = case @type
-                         when :success
+                         when :notice
                            %w[text-green-500 bg-green-100]
-                         when :error
+                         when :alert
                            %w[text-red-500 bg-red-100]
                          when :warning
                            %w[text-orange-500 bg-orange-100]

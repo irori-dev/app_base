@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Cat::Component, type: :component do
+RSpec.describe CatCard::Component, type: :component do
   subject { render_inline(described_class.new(cat:)) }
   let(:cat) { create(:cat, name: 'cat_name', age: 30) }
 

@@ -1,0 +1,5 @@
+= turbo_frame_tag 'modal' do
+  %div{data: { controller: 'modal', 'modal-target': 'modal' }}
+    .fixed.opacity-30.bg-black.z-40.top-0.left-0.w-full.h-full{data: {action: 'click->modal#close'}}
+    .fixed.bg-white.rounded-lg.shadow-lg.p-10.inset-x-0.top-10.mx-auto.z-40.overflow-y-auto{class: 'max-h-[calc(100vh_-_5rem)] max-w-[100vw] lg:max-w-4xl' }
+      = content

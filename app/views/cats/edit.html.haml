@@ -1,2 +1,2 @@
-= render 'layouts/modal' do
+= render Modal::Component.new do
   = render CatForm::Component.new(cat: @cat)
