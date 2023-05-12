@@ -1,5 +1,6 @@
 class CatsController < ApplicationController
   before_action :set_cat, only: %i[edit update destroy]
+  before_action :require_user!
 
   def index
     @search = Cat.ransack(params[:q])

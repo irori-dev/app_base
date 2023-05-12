@@ -1,0 +1,11 @@
+.container.mx-auto.py-10
+  = form_with model: @user, url: login_path, method: :post, local: true do |f|
+    %div
+      = f.label :uid, "uid", class: 'block text-sm font-medium text-gray-700'
+      = f.text_field :uid, class: 'mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 rounded-md'
+    %div
+      = f.label :password, "password", class: 'block text-sm font-medium text-gray-700'
+      = f.password_field :password, class: 'mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 rounded-md'
+    
+      = f.submit "Log In", class: 'mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full border-gray-300 rounded-md'
+
