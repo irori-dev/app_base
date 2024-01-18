@@ -5,7 +5,7 @@ WORKDIR /app
 ADD Gemfile /app/Gemfile
 ADD Gemfile.lock /app/Gemfile.lock
 
-ENV BUNDLER_VERSION 2.4.19
+ENV BUNDLER_VERSION 2.5.4
 RUN gem update --system \
     && gem install bundler -v $BUNDLER_VERSION \
     && bundle install -j 4
