@@ -54,7 +54,7 @@ services:
     volumes:
       - postgres_volume:/var/lib/postgresql/data
     restart: always
-  
+
   chrome:
     image: seleniarm/standalone-chromium
     shm_size: 2g
