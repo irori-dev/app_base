@@ -2,8 +2,13 @@
   "dockerComposeFile": ["../docker-compose.yml"],
   "service": "app",
   "workspaceFolder": "/app",
-  "extensions": [
-    "KoichiSasada.vscode-rdbg",
-    "GitHub.copilot"
-  ]
+  "customizations": {
+    "extensions": [
+      "KoichiSasada.vscode-rdbg",
+      "GitHub.copilot",
+      "soutaro.rbs-syntax",
+      "misogi.ruby-rubocop",
+      "soutaro.steep-vscode"
+    ]
+  }
 }

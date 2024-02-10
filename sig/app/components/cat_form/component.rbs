@@ -1,0 +1,7 @@
+module CatForm
+  class Component < ViewComponent::Base
+    attr_accessor cat: Cat
+
+    def initialize: (?cat: Cat) -> void
+  end
+end

@@ -1,0 +1,5 @@
+class BaseWorker
+  include Sidekiq::Worker
+
+  def self.sidekiq_options: (queue: Symbol, retry: Integer) -> void
+end

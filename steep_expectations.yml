@@ -1,0 +1,33 @@
+---
+- file: app/controllers/cats_controller.rb
+  diagnostics:
+  - range:
+      start:
+        line: 5
+        character: 18
+      end:
+        line: 5
+        character: 25
+    severity: ERROR
+    message: Type `singleton(::Cat)` does not have method `ransack`
+    code: Ruby::NoMethod
+  - range:
+      start:
+        line: 18
+        character: 19
+      end:
+        line: 18
+        character: 29
+    severity: ERROR
+    message: Type `::CatsController` does not have method `cat_params`
+    code: Ruby::NoMethod
+  - range:
+      start:
+        line: 26
+        character: 17
+      end:
+        line: 26
+        character: 27
+    severity: ERROR
+    message: Type `::CatsController` does not have method `cat_params`
+    code: Ruby::NoMethod
