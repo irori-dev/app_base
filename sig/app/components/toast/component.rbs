@@ -1,0 +1,8 @@
+module Toast
+  class Component < ViewComponent::Base
+    attr_accessor type: Symbol
+    attr_accessor message: String
+
+    def initialize: (message: untyped, ?type: Symbol) -> void
+  end
+end

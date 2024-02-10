@@ -36,19 +36,25 @@ jobs:
       - name: Setup docker
         shell: bash
         run: |
-          docker-compose build
-          docker-compose run app bundle install
-          docker-compose run app bundle exec rails assets:precompile
-          docker-compose up -d
-          docker-compose exec -T app bundle exec rails db:create
+          docker compose build
+          docker compose run app bundle install
+          docker compose run app bundle exec rails assets:precompile
+          docker compose up -d
+          docker compose exec -T app bundle exec rails db:create
       - name: Run rubocop
         shell: bash
         run: |
-          docker-compose exec -T app bundle exec rubocop
+          docker compose exec -T app bundle exec rubocop
+      - name: Run Steep
+        shell: bash
+        run: |
+          docker compose exec -T app bundle exec rbs collection install
+          docker compose exec -T app bin/rails rbs_rails:all
+          docker compose exec -T app bundle exec steep check --with-expectations
       - name: Run rspec
         shell: bash
         run: |
-          docker-compose exec -T app bin/rspec
+          docker compose exec -T app bin/rspec
       - name: Update Slack message if test is failed
         if: failure()
         uses: slackapi/slack-github-action@v1.23.0

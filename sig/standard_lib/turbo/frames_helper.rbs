@@ -1,0 +1,4 @@
+module Turbo
+  class FramesHelper
+  end
+end

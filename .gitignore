@@ -40,3 +40,5 @@
 .vscode/*
 !.vscode/launch.json
 !.vscode/settings.json
+
+.gem_rbs_collection

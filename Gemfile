@@ -94,3 +94,6 @@ gem "view_component"
 gem 'kaminari'
 
 gem 'ransack'
+
+gem 'rbs_rails', require: false
+gem 'steep'
