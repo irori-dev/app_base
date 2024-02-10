@@ -1,12 +1,11 @@
-
 target :app do
-  signature "sig"
+  signature 'sig'
 
-  check "app"
+  check 'app'
 end
 
 target :lib do
-  signature "sig"
+  signature 'sig'
 
-  check "lib"
+  check 'lib'
 end
