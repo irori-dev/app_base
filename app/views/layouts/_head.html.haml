@@ -1,6 +1,6 @@
 - default_title = "AppBase | アプリの簡単な説明"
 - default_description = "Railsアプリケーションを作成するための土台となるリポジトリです。"
-- default_image = "https://corporate.irori.dev/assets/ogp.webp"
+- default_image = "https://placehold.jp/1200x630.png"
 
 
 %title
@@ -18,11 +18,11 @@
 %link{href: "https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&display=swap", rel: "stylesheet"}/
 %meta{content: "ja_JP", property: "og:locale"}/
 %meta{content: "website", property: "og:type"}/
-%meta{content: "保育士リンク", property: "og:site_name"}/
+%meta{content: "AppBase", property: "og:site_name"}/
 %meta{content: content_for?(:title) ? yield(:title) : default_title, property: "og:title"}/
 %meta{content: content_for?(:description) ? yield(:description) : default_description, property: "og:description"}/
 %meta{content: content_for?(:image) ? yield(:image) : default_image, property: "og:image"}/
-%meta{content: "https://hoikushi-link.com/", property: "og:url"}/
+%meta{content: "https://example.com/", property: "og:url"}/
 %meta{content: "summary_large_image", property: "twitter:card"}/
 %meta{content: "@irori_dev", property: "twitter:site"}/
 = yield :other_head
