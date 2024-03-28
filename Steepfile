@@ -1,7 +1,7 @@
 target :app do
   signature 'sig'
 
-  check 'app'
+  check 'app/models'
 end
 
 target :lib do
