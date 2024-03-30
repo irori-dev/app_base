@@ -77,6 +77,7 @@ group :test do
 
   gem 'rspec-rails'
   gem 'factory_bot_rails'
+  gem 'webmock'
 end
 
 # ridgepole
@@ -97,3 +98,6 @@ gem 'ransack'
 
 gem 'rbs_rails', require: false
 gem 'steep'
+
+gem "slack-notifier"
+gem 'exception_notification'
