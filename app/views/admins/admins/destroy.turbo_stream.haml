@@ -1,0 +1,4 @@
+= turbo_stream.remove dom_id(@admin)
+= turbo_stream.update :toasts do
+  - flash.each do |key, value|
+    = render Toast::Component.new(type: key.to_sym, message: value)

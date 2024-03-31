@@ -1,0 +1,14 @@
+- content_for :title, 'メールを送信しました | バリュー保育'
+
+.min-h-screen.flex.items-center
+  .px-4.space-y-10.text-center.w-full
+    %h1.text-2xl.font-bold
+      メールを送信しました
+    %p.text-left
+      入力されたメールアドレスに確認用メールを送信しました。
+      リンクの有効期限は30分です。 
+      メールが届かない場合、info@example.comからのメールが迷惑メールに入っている可能性があります。
+      解決しない場合は
+      = link_to 'こちら', new_contact_path, class: 'text-blue-500 hover:underline'
+      からお問い合わせください
+

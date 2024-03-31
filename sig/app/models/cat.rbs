@@ -1,3 +1,0 @@
-class Cat < ::ApplicationRecord
-  def self.ransackable_attributes: (Object _auth_object) -> Array[String]
-end

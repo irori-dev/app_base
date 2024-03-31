@@ -55,6 +55,5 @@ hamlを使用しています。
 
 ## サンプル実装
 
-`cats`のresourcesを作成しています。
+`users`と`admins`のresourcesを作成しています。
 参考にしてみてください。
-

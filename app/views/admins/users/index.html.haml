@@ -1,0 +1,26 @@
+- content_for :title, 'ユーザー一覧'
+- content_for :description, 'ユーザー一覧'
+
+.px-4.py-8.border-b-2.border-gray-100
+  %h1.text-xl.font-bold
+    ユーザー一覧
+  .flex.justify-between.items-end.pt-2
+    = search_form_for @search, url: admins_users_path, method: :get, class: 'flex gap-4 items-end' do |f|
+      .flex.flex-col.gap-2
+        = f.label :email_cont, 'メールアドレス'
+        = f.search_field :email_cont, class: 'input w-80', placeholder: '田中 太郎'
+      = f.submit '検索', class: 'px-2 py-1 text-white bg-blue-500 rounded-lg hover:bg-blue-600'
+.flex.px-4.py-3.border-b-2.border-gray-100.gap-4
+  .flex-none.w-10
+    %p.font-bold
+      ID
+  .flex-1
+    %p.font-bold
+      メールアドレス
+  .flex-none.w-40
+    %p.font-bold
+      作成日時
+  .flex-none.w-16
+= turbo_frame_tag "users-page-#{@users.current_page}" do
+  = render Admins::UserCard::Component.with_collection(@users)
+  = turbo_frame_tag "users-page-#{@users.next_page}", loading: :lazy, src: path_to_next_page(@users)

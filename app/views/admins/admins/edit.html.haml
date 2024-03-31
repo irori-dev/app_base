@@ -1,0 +1,16 @@
+= render Modal::Component.new do
+  .space-y-8
+    %h3.text-xl.text-center
+      管理者作成
+    = form_with model: @admin, url: admins_admin_path(@admin), method: :put, class: 'space-y-8', data: { controller: 'validatable', action: "turbo:submit-end->modal#successClose" } do |f|
+      .space-y-1
+        = f.label :email, class: 'flex items-center gap-1' do
+          %p.inline-block.text-base
+            メールアドレス
+          %span.bg-yellow-500.label-tag
+            必須
+        = f.email_field :email, class: "input", placeholder: "example@example.com", required: true, data: { action: 'change->validatable#checkValidity', 'validatable-target' => 'textField' }
+      .flex.pt-4.justify-center
+        = f.submit '保存', class: 'px-20 py-2 text-white bg-blue-500 rounded-full text-xl font-bold hover:bg-blue-600 disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:cursor-not-allowed', data: { 'validatable-target': 'submitButton' }
+
+  

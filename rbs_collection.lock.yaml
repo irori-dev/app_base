@@ -93,6 +93,14 @@ gems:
   version: '0'
   source:
     type: stdlib
+- name: bcrypt
+  version: '3.1'
+  source:
+    type: git
+    name: ruby/gem_rbs_collection
+    revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
+    remote: https://github.com/ruby/gem_rbs_collection.git
+    repo_dir: gems
 - name: bigdecimal
   version: '0'
   source:
@@ -225,6 +233,10 @@ gems:
     revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: openssl
+  version: '0'
+  source:
+    type: stdlib
 - name: parallel
   version: '1.20'
   source:
@@ -349,6 +361,10 @@ gems:
     revision: 823e015090cd291d53c4f9d9d7e76b931a6cc75d
     remote: https://github.com/ruby/gem_rbs_collection.git
     repo_dir: gems
+- name: socket
+  version: '0'
+  source:
+    type: stdlib
 - name: tempfile
   version: '0'
   source:

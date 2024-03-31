@@ -1,0 +1,3 @@
+class EmailChangeMailer < ApplicationMailer
+  def self.for_changeable: (::EmailChange) -> ActionMailer::MessageDelivery
+end

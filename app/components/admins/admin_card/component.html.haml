@@ -1,0 +1,12 @@
+= turbo_frame_tag dom_id(@admin), class: 'flex px-4 py-3 border-b-2 border-gray-100 gap-4 items-center' do
+  .flex-none.w-4
+    %p
+      = @admin.id
+  .flex-none.w-64
+    %p
+      = @admin.email
+  .flex-1
+    .flex.justify-end.gap-2
+      - if editable?
+        = link_to '編集', edit_admins_admin_path(@admin), class: 'px-2 py-1 text-white bg-blue-500 rounded-lg hover:bg-blue-600', data: { turbo_frame: :modal }
+        = button_to '削除', admins_admin_path(@admin), method: :delete, class: 'px-2 py-1 text-white bg-red-400 rounded-lg hover:bg-red-500', form: { data: { turbo_confirm: "本当に削除しますか？" }}

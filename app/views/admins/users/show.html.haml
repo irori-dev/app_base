@@ -1,0 +1,11 @@
+- content_for :title, @user.email
+- content_for :description, @user.email
+
+.px-4.py-8.space-y-8
+  %span.flex.gap-1.overflow-x-auto.items-center
+    = link_to 'ユーザー一覧', admins_users_path, class: 'hover:text-gray-300 whitespace-nowrap'
+    %svg.w-5.h-5.fill-none{fill: 'none', stroke: "currentColor", "stroke-width" => "1.5", viewbox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg"}
+      = render 'svgs/chevron_right'
+    %span
+      = @user.email
+

@@ -1,0 +1,7 @@
+create_table :contacts, force: :cascade do |t|
+  t.string :name, null: false
+  t.string :email, null: false
+  t.string :phone_number, null: false
+  t.text :text, null: false
+  t.timestamps
+end
