@@ -1,0 +1,21 @@
+- content_for :title, 'メールアドレス変更 | バリュー保育'
+
+.px-4.space-y-8
+  %span.flex.gap-1.overflow-x-auto
+    = link_to 'マイページ', users_mypage_path, class: 'hover:text-gray-300 whitespace-nowrap'
+    %svg.w-6.h-6.fill-none{fill: 'none', stroke: "currentColor", "stroke-width" => "1.5", viewbox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg"}
+      = render 'svgs/chevron_right'
+    %span
+      メールアドレス変更
+  .text-center
+    %h1.text-2xl.font-bold
+      メールアドレス変更
+    = form_with url: users_email_changes_path, data: { turbo: false, controller: 'validatable' }, class: "space-y-8" do |f|
+      .space-y-1
+        = f.label :email, class: 'flex items-center gap-1' do
+          %p.inline-block.text-base
+            新しいメールアドレス
+          %span.bg-yellow-500.label-tag
+            必須
+        = f.email_field :email, class: "input", placeholder: "example@example.com", required: true, data: { action: 'input->validatable#checkValidity', 'validatable-target': 'textField' }
+      = f.submit "メール送信", class: "max-w-full px-16 py-2 p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full font-bold disabled:bg-gray-300 disabled:cursor-not-allowed", data: {'validatable-target': 'submitButton'}

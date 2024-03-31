@@ -1,0 +1,12 @@
+= turbo_frame_tag dom_id(@user), class: 'flex px-4 py-3 border-b-2 border-gray-100 gap-4 items-center' do
+  .flex-none.w-10
+    %p
+      = @user.id
+  .flex-1
+    %p
+      = @user.email
+  .flex-none.w-40
+    %p
+      = @user.created_at.strftime('%Y/%m/%d %H:%M')
+  .flex-none.w-16.flex
+    = link_to '詳細', admins_user_path(@user), class: 'block px-2 py-1 text-white bg-violet-500 rounded-lg hover:bg-violet-600', data: { turbo_frame: '_top' }

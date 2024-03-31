@@ -1,0 +1,5 @@
+= turbo_stream.replace dom_id(@admin) do
+  = render Admins::AdminCard::Component.new(admin: @admin, current_admin:)
+= turbo_stream.update :toasts do
+  - flash.each do |key, value|
+    = render Toast::Component.new(type: key.to_sym, message: value)

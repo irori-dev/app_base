@@ -1,0 +1,13 @@
+- content_for :title, 'パスワード再設定ページのリンクをお送りしました | バリュー保育'
+
+.min-h-screen.flex.items-center
+  .px-4.space-y-10.text-center.w-full
+    %h1.text-2xl.font-bold
+      パスワード再設定ページのリンクをお送りしました
+    %p.text-left
+      入力されたメールアドレスがアカウント登録されていた場合、パスワード再設定用のメールをお送りしました。
+      リンクの有効期限は30分です。
+      メールが届かない場合、アカウントがメールアドレスに紐づいていないかinfo@example.comからのメールが迷惑メールに入っている可能性があります。
+      解決しない場合は
+      = link_to 'こちら', new_contact_path, class: 'text-blue-500 hover:underline'
+      からお問い合わせください

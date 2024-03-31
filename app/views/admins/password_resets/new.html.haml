@@ -1,0 +1,19 @@
+.min-h-screen.flex.items-center
+  .px-4.space-y-10.text-center.w-full
+    %h1.text-4xl.font-bold
+      パスワードを忘れた場合
+    %ul.text-left.list-decimal.list-inside
+      %li
+        管理者として登録されたメールアドレスを入力して送信ボタンを押してください。
+      %li
+        送信されたメールに記載されているURLをクリックし、パスワード変更画面からパスワードを再設定してください。
+    = form_with url: admins_password_resets_path, data: { turbo: false }, class: "space-y-8" do |f|
+      .space-y-1
+        = f.label :email, 'メールアドレス', class: "block text-left"
+        = f.email_field :email, class: "input", placeholder: "example@example.com"
+      = f.submit "送信", class: "w-full p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-bold"
+    = link_to new_admins_session_path, class: 'hover:opacity-80 flex gap-2 justify-center' do
+      %svg.w-6.h-6{:fill => "none", :stroke => "currentColor", "stroke-width" => "1.5", :viewbox => "0 0 24 24", :xmlns => "http://www.w3.org/2000/svg"}
+        = render 'svgs/chevron_right'
+      %p
+        ログインはこちら

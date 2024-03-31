@@ -1,5 +1,0 @@
-= turbo_stream.prepend 'cats-page-1' do
-  = render CatCard::Component.new(cat: @cat)
-= turbo_stream.update :toasts do
-  - flash.each do |key, value|
-    = render Toast::Component.new(type: key.to_sym, message: value)

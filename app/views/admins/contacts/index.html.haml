@@ -1,0 +1,34 @@
+- content_for :title, 'お問い合わせ一覧'
+- content_for :description, 'お問い合わせ一覧'
+
+.px-4.py-8.border-b-2.border-gray-100
+  %h1.text-xl.font-bold
+    お問い合わせ一覧
+  .flex.justify-between.items-end.pt-2
+    = search_form_for @search, url: admins_contacts_path, method: :get, class: 'flex gap-4 items-end' do |f|
+      .flex.flex-col.gap-2
+        = f.label :name_or_email_cont, 'お名前、メールアドレスなど'
+        = f.search_field :name_or_email_cont, class: 'input w-80', placeholder: '田中 太郎'
+      = f.submit '検索', class: 'px-2 py-1 text-white bg-blue-500 rounded-lg hover:bg-blue-600'
+.flex.px-4.py-3.border-b-2.border-gray-100.gap-4
+  .flex-none.w-4
+    %p.font-bold
+      ID
+  .flex-none.w-24
+    %p.font-bold
+      お名前
+  .flex-none.w-48
+    %p.font-bold
+      メールアドレス
+  .flex-none.w-28
+    %p.font-bold
+      電話番号
+  .flex-1
+    %p.font-bold
+      問い合わせ内容
+  .flex-none.w-40
+    %p.font-bold
+      作成日時
+= turbo_frame_tag "contacts-page-#{@contacts.current_page}" do
+  = render Admins::ContactCard::Component.with_collection(@contacts)
+  = turbo_frame_tag "contacts-page-#{@contacts.next_page}", loading: :lazy, src: path_to_next_page(@contacts)

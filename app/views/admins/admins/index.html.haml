@@ -1,0 +1,26 @@
+- content_for :title, '管理者一覧'
+- content_for :description, '管理者一覧'
+
+.px-4.py-8.border-b-2.border-gray-100
+  %h1.text-xl.font-bold
+    管理者一覧
+  .flex.justify-between.items-end.pt-2
+    = search_form_for @search, url: admins_admins_path, method: :get, class: 'flex gap-4 items-end' do |f|
+      .flex.flex-col.gap-2
+        = f.label :email_cont, 'メールアドレス'
+        = f.search_field :email_cont, class: 'input w-80', placeholder: 'example@example.com'
+      = f.submit '検索', class: 'px-2 py-1 text-white bg-blue-500 rounded-lg hover:bg-blue-600'
+      = link_to '新規作成', new_admins_admin_path, class: 'px-2 py-1 text-white bg-emerald-500 rounded-lg hover:bg-emerald-600', data: { turbo_frame: :modal }
+.flex.px-4.py-3.border-b-2.border-gray-100.gap-4
+  .flex-none.w-4
+    %p.font-bold
+      ID
+  .flex-none.w-64
+    %p.font-bold
+      メールアドレス
+  .flex-1.flex.justify-end
+    %p.font-bold
+      アクション
+= turbo_frame_tag "admins-page-#{@admins.current_page}" do
+  = render Admins::AdminCard::Component.with_collection(@admins, current_admin:)
+  = turbo_frame_tag "admins-page-#{@admins.next_page}", loading: :lazy, src: path_to_next_page(@admins)

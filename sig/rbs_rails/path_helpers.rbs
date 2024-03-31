@@ -5,10 +5,6 @@ interface _RbsRailsPathHelpers
   def rails_info_properties_path: (*untyped) -> String
   def rails_info_routes_path: (*untyped) -> String
   def rails_info_path: (*untyped) -> String
-  def cats_path: (*untyped) -> String
-  def new_cat_path: (*untyped) -> String
-  def edit_cat_path: (*untyped) -> String
-  def cat_path: (*untyped) -> String
   def root_path: (*untyped) -> String
   def sidekiq_web_path: (*untyped) -> String
   def turbo_recede_historical_location_path: (*untyped) -> String
@@ -44,10 +40,6 @@ interface _RbsRailsPathHelpers
   def rails_info_properties_url: (*untyped) -> String
   def rails_info_routes_url: (*untyped) -> String
   def rails_info_url: (*untyped) -> String
-  def cats_url: (*untyped) -> String
-  def new_cat_url: (*untyped) -> String
-  def edit_cat_url: (*untyped) -> String
-  def cat_url: (*untyped) -> String
   def root_url: (*untyped) -> String
   def sidekiq_web_url: (*untyped) -> String
   def turbo_recede_historical_location_url: (*untyped) -> String
