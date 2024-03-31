@@ -1,5 +1,9 @@
 class ApplicationRecord < ActiveRecord::Base
 end
+class PasswordReset::ActiveRecord_Associations_CollectionProxy < ActiveRecord::Associations::CollectionProxy
+end
+class EmailChange::ActiveRecord_Associations_CollectionProxy < ActiveRecord::Associations::CollectionProxy
+end
 module ActiveStorage
 end
 class ActiveStorage::Record < ActiveRecord::Base

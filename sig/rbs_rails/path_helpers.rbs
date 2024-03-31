@@ -5,8 +5,36 @@ interface _RbsRailsPathHelpers
   def rails_info_properties_path: (*untyped) -> String
   def rails_info_routes_path: (*untyped) -> String
   def rails_info_path: (*untyped) -> String
+  def new_admins_session_path: (*untyped) -> String
+  def admins_session_path: (*untyped) -> String
+  def admins_users_path: (*untyped) -> String
+  def admins_user_path: (*untyped) -> String
+  def admins_contacts_path: (*untyped) -> String
+  def sent_admins_password_resets_path: (*untyped) -> String
+  def admins_password_resets_path: (*untyped) -> String
+  def new_admins_password_reset_path: (*untyped) -> String
+  def edit_admins_password_reset_path: (*untyped) -> String
+  def admins_password_reset_path: (*untyped) -> String
+  def admins_admins_path: (*untyped) -> String
+  def new_admins_admin_path: (*untyped) -> String
+  def edit_admins_admin_path: (*untyped) -> String
+  def admins_admin_path: (*untyped) -> String
+  def new_users_session_path: (*untyped) -> String
+  def users_session_path: (*untyped) -> String
+  def sent_users_password_resets_path: (*untyped) -> String
+  def users_password_resets_path: (*untyped) -> String
+  def new_users_password_reset_path: (*untyped) -> String
+  def edit_users_password_reset_path: (*untyped) -> String
+  def users_password_reset_path: (*untyped) -> String
+  def sent_users_email_changes_path: (*untyped) -> String
+  def change_users_email_change_path: (*untyped) -> String
+  def users_email_changes_path: (*untyped) -> String
+  def new_users_email_change_path: (*untyped) -> String
+  def contacts_path: (*untyped) -> String
+  def new_contact_path: (*untyped) -> String
   def root_path: (*untyped) -> String
   def sidekiq_web_path: (*untyped) -> String
+  def letter_opener_web_path: (*untyped) -> String
   def turbo_recede_historical_location_path: (*untyped) -> String
   def turbo_resume_historical_location_path: (*untyped) -> String
   def turbo_refresh_historical_location_path: (*untyped) -> String
@@ -40,8 +68,36 @@ interface _RbsRailsPathHelpers
   def rails_info_properties_url: (*untyped) -> String
   def rails_info_routes_url: (*untyped) -> String
   def rails_info_url: (*untyped) -> String
+  def new_admins_session_url: (*untyped) -> String
+  def admins_session_url: (*untyped) -> String
+  def admins_users_url: (*untyped) -> String
+  def admins_user_url: (*untyped) -> String
+  def admins_contacts_url: (*untyped) -> String
+  def sent_admins_password_resets_url: (*untyped) -> String
+  def admins_password_resets_url: (*untyped) -> String
+  def new_admins_password_reset_url: (*untyped) -> String
+  def edit_admins_password_reset_url: (*untyped) -> String
+  def admins_password_reset_url: (*untyped) -> String
+  def admins_admins_url: (*untyped) -> String
+  def new_admins_admin_url: (*untyped) -> String
+  def edit_admins_admin_url: (*untyped) -> String
+  def admins_admin_url: (*untyped) -> String
+  def new_users_session_url: (*untyped) -> String
+  def users_session_url: (*untyped) -> String
+  def sent_users_password_resets_url: (*untyped) -> String
+  def users_password_resets_url: (*untyped) -> String
+  def new_users_password_reset_url: (*untyped) -> String
+  def edit_users_password_reset_url: (*untyped) -> String
+  def users_password_reset_url: (*untyped) -> String
+  def sent_users_email_changes_url: (*untyped) -> String
+  def change_users_email_change_url: (*untyped) -> String
+  def users_email_changes_url: (*untyped) -> String
+  def new_users_email_change_url: (*untyped) -> String
+  def contacts_url: (*untyped) -> String
+  def new_contact_url: (*untyped) -> String
   def root_url: (*untyped) -> String
   def sidekiq_web_url: (*untyped) -> String
+  def letter_opener_web_url: (*untyped) -> String
   def turbo_recede_historical_location_url: (*untyped) -> String
   def turbo_resume_historical_location_url: (*untyped) -> String
   def turbo_refresh_historical_location_url: (*untyped) -> String
