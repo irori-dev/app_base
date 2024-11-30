@@ -1,7 +1,4 @@
-require 'sidekiq/web'
-
 Rails.application.routes.draw do
-
   namespace :admins do
     resource :session, only: %i[new create destroy]
     resources :users, only: %i[index show]
@@ -25,7 +22,6 @@ Rails.application.routes.draw do
 
   resources :contacts, only: %i[new create]
   root to: 'users/sessions#new'
-  
-  mount Sidekiq::Web, at: '/sidekiq' if Rails.env.development?
+
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 end
