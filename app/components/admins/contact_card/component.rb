@@ -28,6 +28,6 @@ class Admins::ContactCard::Component < ViewComponent::Base
   end
 
   def created_at
-    @contact.created_at.strftime('%Y/%m/%d %H:%M:%S')
+    @contact.created_at.strftime("%Y/%m/%d %H:%M:%S")
   end
 end

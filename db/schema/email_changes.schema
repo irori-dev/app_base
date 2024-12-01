@@ -1,8 +1,0 @@
-create_table :email_changes, force: :cascade do |t|
-  t.references :email_changeable, polymorphic: true, index: { name: 'index_email_changes_on_email_changeable' }
-  t.string :change_digest, null: false
-  t.string :email, null: false
-  t.datetime :changed_at
-  t.timestamps
-end
-add_index :email_changes, :change_digest, unique: true

@@ -1,4 +1,4 @@
-class EmailChange < ApplicationRecord
+class User::EmailChange < ApplicationRecord
   attr_accessor :change_token
 
   EXPIRED_TIME = 30.minutes
@@ -6,13 +6,13 @@ class EmailChange < ApplicationRecord
   validates :change_digest, presence: true, uniqueness: true
   validates :email, presence: true
 
-  belongs_to :email_changeable, polymorphic: true
+  belongs_to :user, class_name: "User::Core", foreign_key: "user_id"
 
-  scope :not_expired, -> { where('created_at > ?', EXPIRED_TIME.ago) }
+  scope :not_expired, -> { where("created_at > ?", EXPIRED_TIME.ago) }
   scope :not_changed, -> { where(changed_at: nil) }
   scope :detected_by, lambda { |token|
                         detect(proc {
-                                 raise ArgumentError, '期限切れ、もしくは無効なトークンです'
+                                 raise ArgumentError, "\u671F\u9650\u5207\u308C\u3001\u3082\u3057\u304F\u306F\u7121\u52B9\u306A\u30C8\u30FC\u30AF\u30F3\u3067\u3059"
                                }) { |email_change| email_change.match?(token) }
                       }
 
@@ -22,7 +22,7 @@ class EmailChange < ApplicationRecord
   end
 
   def send_email_changed_email
-    EmailChangeMailer.for_changeable(self).deliver_now
+    EmailChangeMailer.for_user(self).deliver_now
   end
 
   def match?(token)
@@ -30,14 +30,17 @@ class EmailChange < ApplicationRecord
   end
 
   def change!
-    update!(changed_at: Time.current)
+    ActiveRecord::Base.transaction do
+      user.update!(email:)
+      update!(changed_at: Time.current)
+    end
   end
 
   private
 
   def create_change_digest
-    self.change_token = EmailChange.new_token
-    self.change_digest = EmailChange.digest(change_token)
+    self.change_token = User::EmailChange.new_token
+    self.change_digest = User::EmailChange.digest(change_token)
   end
 
   class << self

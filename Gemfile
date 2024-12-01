@@ -1,32 +1,32 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 git_source(:github) { |repo| 'https://github.com/#{repo}.git' }
 
-ruby file: '.ruby-version'
+ruby file: ".ruby-version"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
-gem 'rails', '~> 8.0.0'
+gem "rails", "~> 8.0.0"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use postgresql as the database for Active Record
-gem 'pg', '~> 1.5'
+gem "pg", "~> 1.5"
 # Use the Puma web server [https://github.com/puma/puma]
-gem 'puma', '>= 6.4'
+gem "puma", ">= 6.4"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
-gem 'importmap-rails'
+gem "importmap-rails"
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem 'turbo-rails'
+gem "turbo-rails"
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem 'stimulus-rails'
+gem "stimulus-rails"
 # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
-gem 'tailwindcss-rails'
+gem "tailwindcss-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem 'jbuilder'
+gem "jbuilder"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem 'bcrypt', '~> 3.1.20'
+gem "bcrypt", "~> 3.1.20"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ]
+gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
@@ -34,10 +34,12 @@ gem "solid_queue"
 gem "solid_cable"
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', require: false
+gem "bootsnap", require: false
 
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
+
+gem "mission_control-jobs"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem 'image_processing', '~> 1.2'
@@ -55,39 +57,39 @@ end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
-  gem 'web-console'
+  gem "web-console"
 end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem 'capybara'
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
+  gem "capybara"
+  gem "selenium-webdriver"
+  gem "webdrivers"
 
-  gem 'rspec-rails'
-  gem 'factory_bot_rails'
-  gem 'webmock'
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "webmock"
 end
 
 # ridgepole
-gem 'ridgepole'
+gem "ridgepole"
 
 # use haml
-gem 'haml-rails'
+gem "haml-rails"
 
 # for component
-gem 'view_component'
+gem "view_component"
 
-gem 'kaminari'
+gem "kaminari"
 
-gem 'ransack'
+gem "ransack"
 
-gem 'rbs_rails', require: false
-gem 'steep'
+gem "rbs_rails", require: false
+gem "steep"
 
-gem 'slack-notifier'
-gem 'exception_notification'
+gem "slack-notifier"
+gem "exception_notification"
 
-gem 'seed-fu'
+gem "seed-fu"
 
-gem 'letter_opener_web'
+gem "letter_opener_web"

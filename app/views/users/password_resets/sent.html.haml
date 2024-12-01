@@ -1,6 +1,4 @@
-- content_for :title, 'パスワード再設定ページのリンクをお送りしました | バリュー保育'
-
-.min-h-screen.flex.items-center
+= render Modal::Component.new do
   .px-4.space-y-10.text-center.w-full
     %h1.text-2xl.font-bold
       パスワード再設定ページのリンクをお送りしました
@@ -9,5 +7,5 @@
       リンクの有効期限は30分です。
       メールが届かない場合、アカウントがメールアドレスに紐づいていないかinfo@example.comからのメールが迷惑メールに入っている可能性があります。
       解決しない場合は
-      = link_to 'こちら', new_contact_path, class: 'text-blue-500 hover:underline'
+      = link_to 'こちら', new_contact_path, class: 'text-blue-500 hover:underline', data: { turbo_frame: '_top' }
       からお問い合わせください

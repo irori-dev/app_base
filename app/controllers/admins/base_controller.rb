@@ -2,7 +2,7 @@ class Admins::BaseController < ApplicationController
   before_action :prepare_exception_notifier
   before_action :require_admin!
 
-  layout 'admins'
+  layout "admins"
 
   private
 
@@ -29,7 +29,7 @@ class Admins::BaseController < ApplicationController
   end
 
   def prepare_exception_notifier
-    request.env['exception_notifier.exception_data'] = {
+    request.env["exception_notifier.exception_data"] = {
       current_admin_id: current_admin&.id
     }
   end

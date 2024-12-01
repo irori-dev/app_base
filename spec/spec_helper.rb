@@ -15,7 +15,6 @@ require 'rake'
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
-
   config.before(:suite) do
     Rails.application.load_tasks
     Rake.application['ridgepole:apply'].invoke

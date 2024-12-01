@@ -1,4 +1,4 @@
-require 'rbs_rails/rake_task'
+require "rbs_rails/rake_task"
 
 namespace :rbs do
   task setup: %i[clean collection rbs_rails:all]
@@ -6,33 +6,33 @@ namespace :rbs do
   # task setup: %i[clean collection prototype rbs_rails:all subtract]
 
   task :clean do
-    sh 'rm', '-rf', 'sig/rbs_rails/'
-    sh 'rm', '-rf', 'sig/prototype/'
-    sh 'rm', '-rf', '.gem_rbs_collection/'
+    sh "rm", "-rf", "sig/rbs_rails/"
+    sh "rm", "-rf", "sig/prototype/"
+    sh "rm", "-rf", ".gem_rbs_collection/"
   end
 
   task :collection do
     # lockファイルに定義されているバージョンに従わず最新の方情報を取得したいためinstallではなくupdateを利用している
-    sh 'rbs', 'collection', 'update'
+    sh "rbs", "collection", "update"
   end
 
   task :prototype do
-    sh 'rbs', 'prototype', 'rb', '--out-dir=sig/prototype', '--base-dir=.', 'app'
+    sh "rbs", "prototype", "rb", "--out-dir=sig/prototype", "--base-dir=.", "app"
   end
 
   task :subtract do
-    sh 'rbs', 'subtract', '--write', 'sig/prototype', 'sig/rbs_rails'
+    sh "rbs", "subtract", "--write", "sig/prototype", "sig/rbs_rails"
 
-    prototype_path = Rails.root.join('sig/prototype')
-    rbs_rails_path = Rails.root.join('sig/rbs_rails')
-    subtrahends = Rails.root.glob('sig/*')
+    prototype_path = Rails.root.join("sig/prototype")
+    rbs_rails_path = Rails.root.join("sig/rbs_rails")
+    subtrahends = Rails.root.glob("sig/*")
                        .reject { |path| path == prototype_path || path == rbs_rails_path }
                        .map { |path| "--subtrahend=#{path}" }
-    sh 'rbs', 'subtract', '--write', 'sig/prototype', 'sig/rbs_rails', *subtrahends
+    sh "rbs", "subtract", "--write", "sig/prototype", "sig/rbs_rails", *subtrahends
   end
 
   task :validate do
-    sh 'rbs', '-Isig', 'validate'
+    sh "rbs", "-Isig", "validate"
   end
 end
 

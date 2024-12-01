@@ -41,10 +41,14 @@ jobs:
           docker compose run app bundle exec rails assets:precompile
           docker compose up -d
           docker compose exec -T app bundle exec rails db:create
+      - name: Run brakeman
+        shell: bash
+        run: |
+          docker compose exec -T app bin/brakeman
       - name: Run rubocop
         shell: bash
         run: |
-          docker compose exec -T app bundle exec rubocop
+          docker compose exec -T app bin/rubocop
       - name: Run Steep
         shell: bash
         run: |

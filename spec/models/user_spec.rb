@@ -38,7 +38,7 @@ RSpec.describe User, type: :model do
     let(:user) { create(:user) }
     let!(:password_reset) { create(:password_reset, password_resettable: user, password_resettable_type: 'User') }
 
-    it { is_expected.to eq([password_reset]) }
+    it { is_expected.to eq([ password_reset ]) }
   end
 
   describe '#email_changes' do
@@ -46,6 +46,6 @@ RSpec.describe User, type: :model do
     let(:user) { create(:user) }
     let!(:email_change) { create(:email_change, email_changeable: user, email_changeable_type: 'User') }
 
-    it { is_expected.to eq([email_change]) }
+    it { is_expected.to eq([ email_change ]) }
   end
 end

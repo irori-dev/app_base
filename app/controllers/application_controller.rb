@@ -4,9 +4,9 @@ class ApplicationController < ActionController::Base
   private
 
   def prepare_exception_notifier
-    request.env['exception_notifier.exception_data'] = {
+    request.env["exception_notifier.exception_data"] = {
       current_user:,
-      app: 'AppBase'
+      app: "AppBase"
     }
   end
 
@@ -17,12 +17,12 @@ class ApplicationController < ActionController::Base
   def require_not_user!
     return unless user_signed_in?
 
-    flash[:alert] = '既にログインしています'
+    flash[:alert] = "\u65E2\u306B\u30ED\u30B0\u30A4\u30F3\u3057\u3066\u3044\u307E\u3059"
     redirect_to root_path
   end
 
   def current_user
-    @current_user ||= User.find_by(id: session[:user_id])
+    @current_user ||= User::Core.find_by(id: session[:user_id])
   end
   helper_method :current_user
 

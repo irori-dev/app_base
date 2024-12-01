@@ -192,6 +192,16 @@ GEM
     method_source (1.1.0)
     mini_mime (1.1.5)
     minitest (5.25.2)
+    mission_control-jobs (0.6.0)
+      actioncable (>= 7.1)
+      actionpack (>= 7.1)
+      activejob (>= 7.1)
+      activerecord (>= 7.1)
+      importmap-rails (>= 1.2.1)
+      irb (~> 1.13)
+      railties (>= 7.1)
+      stimulus-rails
+      turbo-rails
     msgpack (1.7.5)
     net-imap (0.5.1)
       date
@@ -433,6 +443,7 @@ DEPENDENCIES
   jbuilder
   kaminari
   letter_opener_web
+  mission_control-jobs
   pg (~> 1.5)
   propshaft
   puma (>= 6.4)

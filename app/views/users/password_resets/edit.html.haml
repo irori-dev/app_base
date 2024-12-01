@@ -1,4 +1,4 @@
-- content_for :title, 'パスワード再設定 | バリュー保育'
+- content_for :title, 'パスワード再設定 | AppBase'
 
 .min-h-screen.flex.items-center
   .px-4.space-y-10.text-center.w-full
@@ -6,19 +6,19 @@
       パスワード再設定
     %p.text-left
       パスワードは6文字以上で設定してください。
-    = form_with url: users_password_reset_path(token: params[:token]), method: :patch, data: { turbo: false, controller: 'validatable' }, class: "space-y-8" do |f|
+    = form_with url: users_password_reset_path(token: params[:token]), method: :patch, data: { turbo: false }, class: "space-y-8" do |f|
       .space-y-1
         = f.label :password, class: 'flex items-center gap-1' do
           %p.inline-block.text-base
             新しいパスワード
           %span.bg-yellow-500.label-tag
             必須
-        = f.password_field :password, class: "input", placeholder: "***********", data: { action: 'input->validatable#checkValidity', 'validatable-target': 'passwordField' }
+        = f.password_field :password, class: "input", placeholder: "***********", required: true
       .space-y-1 
         = f.label :password_confirmation, class: 'flex items-center gap-1' do
           %p.inline-block.text-base
             新しいパスワード(確認用)
           %span.bg-yellow-500.label-tag
             必須
-        = f.password_field :password_confirmation, class: "input", placeholder: "***********", data: { action: 'input->validatable#checkValidity', 'validatable-target': 'passwordConfirmationField' }
+        = f.password_field :password_confirmation, class: "input", placeholder: "***********", required: true
       = f.submit "パスワードを再設定してログイン", class: "max-w-full px-16 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full font-bold disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:cursor-not-allowed", data: {'validatable-target': 'submitButton'}

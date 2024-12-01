@@ -11,17 +11,20 @@ Rails.application.routes.draw do
 
   namespace :users do
     resource :session, only: %i[new create destroy]
-    resources :password_resets, only: %i[new create edit update], param: :token do
-      get :sent, on: :collection
-    end
+    resources :password_resets, only: %i[new create edit update], param: :token
     resources :email_changes, only: %i[new create], param: :token do
-      get :sent, on: :collection
       get :change, on: :member
     end
   end
 
+  resources :users, only: %i[new create] do
+    collection do
+      get :mypage
+    end
+  end
   resources :contacts, only: %i[new create]
-  root to: 'users/sessions#new'
+  root to: "static_pages#home"
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
+  mount MissionControl::Jobs::Engine, at: "/jobs"
 end
