@@ -11,7 +11,7 @@ class User::PasswordReset < ApplicationRecord
   scope :not_reset, -> { where(reset_at: nil) }
   scope :detected_by, lambda { |token|
                         detect(proc {
-                                 raise ArgumentError, "\u671F\u9650\u5207\u308C\u3001\u3082\u3057\u304F\u306F\u7121\u52B9\u306A\u30C8\u30FC\u30AF\u30F3\u3067\u3059"
+                                 raise ArgumentError, "期限切れ、もしくは無効なトークンです"
                                }) { |password_reset| password_reset.match?(token) }
                       }
 

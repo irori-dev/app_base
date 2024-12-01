@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   def require_not_user!
     return unless user_signed_in?
 
-    flash[:alert] = "\u65E2\u306B\u30ED\u30B0\u30A4\u30F3\u3057\u3066\u3044\u307E\u3059"
+    flash[:alert] = "既にログインしています"
     redirect_to root_path
   end
 
