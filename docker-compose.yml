@@ -21,7 +21,7 @@ services:
       PORT: 3000
       HOST: localhost
       SELENIUM_DRIVER_URL: http://chrome:4444/wd/hub
-      REDIS_URL: redis://redis:6379
+
   tailwind:
     <<: *x-app
     command: bin/rails tailwindcss:watch
@@ -30,6 +30,13 @@ services:
     depends_on:
       - db
 
+  solid_queue:
+    <<: *x-app
+    command: bundle exec rake solid_queue:start
+    tty: true
+    stdin_open: true
+    depends_on:
+      - db
   db:
     image: postgres
     environment:
