@@ -15,6 +15,11 @@
         = render 'svgs/users'
       %span
         管理者一覧
+    = link_to mission_control_jobs_path, target: :_blank, class: 'flex gap-2 items-center p-2 rounded-lg hover:bg-gray-300' do
+      %svg.w-6.h-6.fill-none{fill: 'none', stroke: "currentColor", "stroke-width" => "1.5", viewbox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg"}
+        = render 'svgs/briefcase'
+      %span
+        ジョブ一覧
     = link_to admins_session_path, data: { turbo_method: :delete }, class: 'flex gap-2 items-center p-2 rounded-lg hover:bg-gray-300' do
       %svg.w-6.h-6.fill-none{fill: 'none', stroke: "currentColor", "stroke-width" => "1.5", viewbox: "0 0 24 24", xmlns: "http://www.w3.org/2000/svg"}
         = render 'svgs/arrow_left_on_rectangle'

@@ -7,7 +7,7 @@ class Admins::BaseController < ApplicationController
   private
 
   def require_admin!
-    redirect_to new_admins_session_path unless admin_signed_in?
+    redirect_to Rails.application.routes.url_helpers.new_admins_session_path unless admin_signed_in?
   end
 
   def current_admin
