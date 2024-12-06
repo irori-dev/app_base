@@ -1,7 +1,12 @@
 Rails.application.routes.draw do
   namespace :admins do
     resource :session, only: %i[new create destroy]
-    resources :users, only: %i[index show]
+    resources :users, only: %i[index show] do
+      collection do
+        post :insert
+        post :update_time
+      end
+    end
     resources :contacts, only: %i[index]
     resources :password_resets, only: %i[new create edit update], param: :token do
       get :sent, on: :collection
