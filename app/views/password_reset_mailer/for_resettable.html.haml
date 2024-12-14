@@ -1,4 +1,0 @@
-- if @password_reset.password_resettable_type == 'User'
-  = link_to edit_users_password_reset_url(@password_reset.reset_token), edit_users_password_reset_url(@password_reset.reset_token)
-- else
-  = link_to edit_admins_password_reset_url(@password_reset.reset_token), edit_admins_password_reset_url(@password_reset.reset_token)

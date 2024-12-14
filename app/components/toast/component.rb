@@ -9,11 +9,11 @@ class Toast::Component < ViewComponent::Base
   def icon
     case @type
     when :alert
-      'svgs/x_mark'
+      "svgs/x_mark"
     when :warning
-      'svgs/exclamation_triangle'
+      "svgs/exclamation_triangle"
     else
-      'svgs/check'
+      "svgs/check"
     end
   end
 
@@ -28,15 +28,15 @@ class Toast::Component < ViewComponent::Base
       rounded-lg
     ]
     particular_classes = case @type
-                         when :notice
-                           %w[text-green-500 bg-green-100]
-                         when :alert
-                           %w[text-red-500 bg-red-100]
-                         when :warning
-                           %w[text-orange-500 bg-orange-100]
-                         else
-                           %w[text-gray-500 bg-gray-100]
-                         end
+    when :notice
+      %w[text-green-500 bg-green-100]
+    when :alert
+      %w[text-red-500 bg-red-100]
+    when :warning
+      %w[text-orange-500 bg-orange-100]
+    else
+      %w[text-gray-500 bg-gray-100]
+    end
 
     universal_classes + particular_classes
   end

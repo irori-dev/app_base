@@ -3,6 +3,7 @@
   %head
     = render 'layouts/head'
   %body.font-sans.text-gray-700
+    = render Navbar::Component.new(current_user: @current_user)
     %main
       = yield
     = turbo_frame_tag 'modal'

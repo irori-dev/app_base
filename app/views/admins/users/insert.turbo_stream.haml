@@ -1,0 +1,6 @@
+= turbo_stream.replace :user_insert_form do
+  = render Admins::UserInsertForm::Component.new
+
+= turbo_stream.update :toasts do
+  - flash.each do |key, value|
+    = render Toast::Component.new(type: key.to_sym, message: value)

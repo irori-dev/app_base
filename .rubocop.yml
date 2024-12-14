@@ -1,39 +1,5 @@
-Style/FrozenStringLiteralComment:
-  Enabled: false
-AllCops:
-  NewCops: enable
-  SuggestExtensions: false
-  Exclude:
-    - "db/**/*"
-    - "config/**/*"
-    - "script/**/*"
-    - node_modules/**/*
-    - bin/*
-    - Gemfile
-    - Gemfile.lock
-    - config/unicorn.conf.rb
-    - "vendor/**/*"
-Metrics/BlockLength:
-  Exclude:
-    - "spec/**/*"
-    - "config/**/*"
-    - "app/views/**/*"
-Metrics/AbcSize:
-  Max: 30
-Style/AsciiComments:
-  Enabled: false
-Style/Documentation:
-  Enabled: false
-Metrics/MethodLength:
-  Enabled: false
-Style/ClassAndModuleChildren:
-  Enabled: false
-Lint/MissingSuper:
-  Enabled: false
-Naming/PredicateName:
-  ForbiddenPrefixes:
-    - is_
-    - have_
-  NamePrefix:
-    - is_
-    - have_
+# Omakase Ruby styling for Rails
+inherit_gem:
+  rubocop-rails-omakase: rubocop.yml
+
+# Your own specialized rules go here

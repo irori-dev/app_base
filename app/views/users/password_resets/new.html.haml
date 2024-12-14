@@ -1,6 +1,4 @@
-- content_for :title, 'パスワードを忘れた場合 | バリュー保育'
-
-.min-h-screen.flex.items-center
+= render Modal::Component.new do
   .px-4.space-y-10.text-center.w-full
     %h1.text-2xl.font-bold.text-center
       パスワードを忘れた場合
@@ -9,17 +7,18 @@
         登録されたメールアドレスを入力して送信ボタンを押してください。
       %li
         送信されたメールに記載されているURLをクリックし、パスワード変更画面からパスワードを再設定してください。
-    = form_with url: users_password_resets_path, data: { turbo: false }, class: "space-y-8" do |f|
+    = form_with url: users_password_resets_path, data: { action: "turbo:submit-end->modal#successClose" }, class: "space-y-8" do |f|
       .space-y-1
         = f.label :email, class: 'flex items-center gap-1' do
           %p.inline-block.text-base
             メールアドレス
           %span.bg-yellow-500.label-tag
             必須
-        = f.email_field :email, class: "input", placeholder: "example@example.com", required: true, data: { action: 'input->validatable#checkValidity', 'validatable-target': 'textField' }
+        = f.email_field :email, class: "input", placeholder: "example@example.com", required: true
       = f.submit "送信", class: "max-w-full px-16 py-2 p-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full font-bold"
-    = link_to new_users_session_path, class: 'hover:opacity-80 flex gap-2 justify-center' do
-      %svg.w-6.h-6{:fill => "none", :stroke => "currentColor", "stroke-width" => "1.5", :viewbox => "0 0 24 24", :xmlns => "http://www.w3.org/2000/svg"}
-        = render 'svgs/chevron_right'
-      %p
-        ログインはこちら
+    .flex.justify-center
+      = link_to new_users_session_path, class: 'hover:opacity-80 flex gap-1 items-center', data: { turbo_frame: 'modal' } do
+        %svg.w-5.h-5{:fill => "none", :stroke => "currentColor", "stroke-width" => "1.5", :viewbox => "0 0 24 24", :xmlns => "http://www.w3.org/2000/svg"}
+          = render 'svgs/chevron_right'
+        %p
+          ログインはこちら

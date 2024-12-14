@@ -1,0 +1,6 @@
+create_table :user_cores, force: :cascade do |t|
+  t.string :email, null: false
+  t.string :password_digest, null: false
+  t.timestamps
+end
+add_index :user_cores, :email, unique: true

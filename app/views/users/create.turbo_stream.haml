@@ -1,0 +1,5 @@
+= turbo_stream.replace 'navbar' do
+  = render Navbar::Component.new(current_user:)
+= turbo_stream.update :toasts do
+  - flash.each do |key, value|
+    = render Toast::Component.new(type: key.to_sym, message: value)

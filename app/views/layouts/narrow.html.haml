@@ -2,8 +2,9 @@
 %html
   %head
     = render 'layouts/head'
-  %body.font-sans.text-gray-700
-    %main.max-w-2xl.mx-auto
+  %body.font-sans.text-gray-700.max-w-2xl.mx-auto
+    = render Navbar::Component.new(current_user: @current_user)
+    %main.py-4
       = yield
     = turbo_frame_tag 'modal'
     = turbo_frame_tag 'toasts', class: 'fixed bottom-0 right-0 z-50 p-4' do

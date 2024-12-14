@@ -9,21 +9,22 @@ Bundler.require(*Rails.groups)
 module Myapp
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.0
-    config.active_job.queue_adapter = :sidekiq
+    config.load_defaults 8.0
+    config.active_job.queue_adapter = :solid_queue
+    config.mission_control.jobs.base_controller_class = "Admins::BaseController"
 
-    config.time_zone = 'Tokyo'
+    config.time_zone = "Tokyo"
 
     config.i18n.default_locale = :ja
-    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
+    config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.{rb,yml}").to_s]
 
     config.autoload_paths += %W[#{config.root}/lib]
     config.allow_origins = Rails.application.credentials.dig(:allow_origins) || []
 
-    Rails.application.routes.default_url_options = if Rails.env == 'development' || Rails.env == 'test'
-      { host: ENV['HOST'], port: ENV['PORT'] }
+    config.action_controller.default_url_options = if Rails.env == "development" || Rails.env == "test"
+      { host: ENV["HOST"], port: ENV["PORT"] }
     else
-      { host: Rails.application.credentials.dig(:base, :host), protocol: 'https' }
+      { host: Rails.application.credentials.dig(:base, :host), protocol: "https" }
     end
   end
 end

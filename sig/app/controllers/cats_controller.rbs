@@ -1,3 +1,0 @@
-class CatsController < ApplicationController
-  def index: () -> void
-end

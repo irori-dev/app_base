@@ -1,8 +1,0 @@
-module Notifier
-  class Slack
-    @client: Slack::Notifier
-
-    def initialize: () -> void
-    def send: (String) -> void
-  end
-end

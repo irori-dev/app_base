@@ -38,12 +38,4 @@ RSpec.describe Admin, type: :model do
       it { is_expected.to be_falsey }
     end
   end
-
-  describe '#password_resets' do
-    subject { admin.password_resets }
-    let(:admin) { create(:admin) }
-    let!(:password_reset) { create(:password_reset, password_resettable: admin, password_resettable_type: 'Admin') }
-
-    it { is_expected.to eq([password_reset]) }
-  end
 end
