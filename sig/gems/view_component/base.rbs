@@ -1,6 +1,0 @@
-module ViewComponent
-  class Base < ActionView::Base
-    def render_in: (view_context: ActionView::Base) -> String
-    def self.with_collection_parameter: (Object) -> ViewComponent::Base
-  end
-end

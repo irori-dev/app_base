@@ -49,12 +49,6 @@ jobs:
         shell: bash
         run: |
           docker compose exec -T app bin/rubocop
-      - name: Run Steep
-        shell: bash
-        run: |
-          docker compose exec -T app bundle exec rbs collection install
-          docker compose exec -T app bin/rails rbs_rails:all
-          docker compose exec -T app bundle exec steep check
       - name: Run rspec
         shell: bash
         run: |

@@ -84,9 +84,6 @@ gem "kaminari"
 
 gem "ransack"
 
-gem "rbs_rails", require: false
-gem "steep"
-
 gem "slack-notifier"
 gem "exception_notification"
 

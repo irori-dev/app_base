@@ -6,9 +6,7 @@
     "extensions": [
       "KoichiSasada.vscode-rdbg",
       "GitHub.copilot",
-      "soutaro.rbs-syntax",
-      "misogi.ruby-rubocop",
-      "soutaro.steep-vscode"
+      "misogi.ruby-rubocop"
     ]
   }
 }

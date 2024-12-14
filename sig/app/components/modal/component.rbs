@@ -1,4 +1,0 @@
-module Modal
-  class Component < ViewComponent::Base
-  end
-end
