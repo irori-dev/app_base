@@ -1,6 +1,6 @@
-class AdminChannel < ApplicationCable::Channel
+class UserCreationChannel < ApplicationCable::Channel
   def subscribed
-    stream_for current_admin
+    stream_from "user_creation_channel"
   end
 
   def unsubscribed

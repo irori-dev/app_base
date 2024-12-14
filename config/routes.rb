@@ -4,7 +4,6 @@ Rails.application.routes.draw do
     resources :users, only: %i[index show] do
       collection do
         post :insert
-        post :update_time
       end
     end
     resources :contacts, only: %i[index]
@@ -32,4 +31,5 @@ Rails.application.routes.draw do
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
   mount MissionControl::Jobs::Engine, at: "/admins/jobs"
+  mount ActionCable.server => '/cable'
 end

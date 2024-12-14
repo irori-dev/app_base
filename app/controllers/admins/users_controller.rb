@@ -13,11 +13,6 @@ class Admins::UsersController < Admins::BaseController
   def insert
     count = params[:count].to_i
     CreateSampleUsersJob.perform_later(count)
-    redirect_to admins_users_path, notice: "Creating #{count} users..."
-  end
-
-  def update_time
-    puts "update_time"
-    AdminChannel.broadcast_to(current_admin, admin: current_admin)
+    flash.now[:notice] = "#{count}件のユーザーを作成しました"
   end
 end

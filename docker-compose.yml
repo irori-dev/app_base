@@ -5,6 +5,9 @@ x-app: &x-app
     context: .
   volumes:
     - .:/app
+  environment:
+    PORT: 3000
+    HOST: localhost
 
 services:
   app:
@@ -18,8 +21,6 @@ services:
     tty: true
     stdin_open: true
     environment:
-      PORT: 3000
-      HOST: localhost
       SELENIUM_DRIVER_URL: http://chrome:4444/wd/hub
 
   tailwind:

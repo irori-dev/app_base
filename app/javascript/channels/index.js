@@ -1,2 +1,2 @@
 // Import all the channels to be used by Action Cable
-import "channels/admin_channel"
+import "channels/user_creation_channel"
