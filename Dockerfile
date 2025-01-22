@@ -1,8 +1,8 @@
-FROM ruby:3.3.6-slim
+FROM ruby:3.4.1-slim
 
 ENV LANG=ja_JP.UTF-8
 ENV LANGUAGE="ja_JP:ja"
-ENV BUNDLER_VERSION 2.5.23
+ENV BUNDLER_VERSION 2.6.3
 
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev vim git imagemagick
 RUN mkdir /app
