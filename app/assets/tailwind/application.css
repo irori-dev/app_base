@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@layer components {
+  .input {
+    @apply w-full px-2 py-1 border border-gray-200 rounded-md placeholder:text-gray-200 disabled:bg-gray-100;
+  }
+  .label-tag {
+    @apply rounded text-xs px-1 font-bold text-white py-0.5;
+  }
+}
+
+@theme {
+  --font-sans: "Noto Sans JP", "sans-serif";
+}

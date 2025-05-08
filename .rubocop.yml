@@ -1,5 +1,74 @@
-# Omakase Ruby styling for Rails
-inherit_gem:
-  rubocop-rails-omakase: rubocop.yml
-
-# Your own specialized rules go here
+Style/FrozenStringLiteralComment:
+  Enabled: false
+AllCops:
+  TargetRubyVersion: 3.4.3
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - "db/**/*"
+    - "config/**/*"
+    - "script/**/*"
+    - node_modules/**/*
+    - bin/*
+    - Gemfile
+    - Gemfile.lock
+    - config/unicorn.conf.rb
+    - "vendor/**/*"
+    - 'db/schema.rb'
+    - 'bin/**/*'
+    - 'vendor/**/*'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+    - "config/**/*"
+    - "app/views/**/*"
+Metrics/AbcSize:
+  Max: 30
+Metrics/ClassLength:
+  Max: 200
+Style/AsciiComments:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+Lint/MissingSuper:
+  Enabled: false
+Naming/PredicateName:
+  ForbiddenPrefixes:
+    - is_
+    - have_
+  NamePrefix:
+    - is_
+    - have_
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+Style/SymbolArray:
+  EnforcedStyle: percent
+Style/WordArray:
+  EnforcedStyle: percent
+Style/HashSyntax:
+  EnforcedStyle: ruby19
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: consistent_comma
+Layout/LineLength:
+  Max: 140
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
+Layout/EmptyLinesAroundClassBody:
+  EnforcedStyle: empty_lines
+Layout/EmptyLinesAroundModuleBody:
+  EnforcedStyle: empty_lines
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
+Naming/MethodParameterName:
+  MinNameLength: 2

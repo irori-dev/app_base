@@ -1,10 +1,11 @@
 class CreateSampleUsersJob < ApplicationJob
+
   def perform(*args)
     count = args[0]
-    chars = ("a".."z").to_a
-    count.times do |i|
-      user = User::Core.create(email: "#{8.times.map { chars.sample }.join}@example.com", password: "password")
-      ActionCable.server.broadcast "user_creation_channel", { user: render_user_card(user) }
+    chars = ('a'..'z').to_a
+    count.times do |_i|
+      user = User::Core.create(email: "#{8.times.map { chars.sample }.join}@example.com", password: 'password')
+      ActionCable.server.broadcast 'user_creation_channel', { user: render_user_card(user) }
       sleep 3
     end
   end
@@ -17,4 +18,5 @@ class CreateSampleUsersJob < ApplicationJob
       layout: false
     )
   end
+
 end

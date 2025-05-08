@@ -1,17 +1,18 @@
 class User::PasswordReset < ApplicationRecord
+
   attr_accessor :reset_token
 
   EXPIRED_TIME = 30.minutes
 
   validates :reset_digest, presence: true, uniqueness: true
 
-  belongs_to :user, class_name: "User::Core", foreign_key: "user_id"
+  belongs_to :user, class_name: 'User::Core', foreign_key: 'user_id'
 
-  scope :not_expired, -> { where("created_at > ?", EXPIRED_TIME.ago) }
+  scope :not_expired, -> { where('created_at > ?', EXPIRED_TIME.ago) }
   scope :not_reset, -> { where(reset_at: nil) }
   scope :detected_by, lambda { |token|
                         detect(proc {
-                                 raise ArgumentError, "期限切れ、もしくは無効なトークンです"
+                                 raise ArgumentError, '期限切れ、もしくは無効なトークンです'
                                }) { |password_reset| password_reset.match?(token) }
                       }
 
@@ -40,6 +41,7 @@ class User::PasswordReset < ApplicationRecord
   end
 
   class << self
+
     def digest(string)
       cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
       BCrypt::Password.create(string, cost:)
@@ -48,5 +50,7 @@ class User::PasswordReset < ApplicationRecord
     def new_token
       SecureRandom.urlsafe_base64
     end
+
   end
+
 end

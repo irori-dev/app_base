@@ -1,8 +1,9 @@
 class UsersController < ApplicationController
+
   before_action :require_not_user!, only: %i[new create]
   before_action :require_user!, only: %i[mypage]
 
-  layout "users"
+  layout 'users'
 
   def new
     @user = User::Core.new
@@ -13,7 +14,7 @@ class UsersController < ApplicationController
 
     if @user.save
       sign_in(@user)
-      flash.now[:notice] = "ユーザー登録が完了しました"
+      flash.now[:notice] = 'ユーザー登録が完了しました'
     else
       render :new
     end
@@ -26,4 +27,5 @@ class UsersController < ApplicationController
   def permitted_params
     params.require(:user_core).permit(:email, :password)
   end
+
 end

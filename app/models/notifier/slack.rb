@@ -1,4 +1,5 @@
 class Notifier::Slack
+
   attr_accessor :client
 
   def initialize
@@ -8,4 +9,5 @@ class Notifier::Slack
   def send(message)
     @client.ping(message)
   end
+
 end

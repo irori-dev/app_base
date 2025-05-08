@@ -45,7 +45,7 @@ RSpec.describe User::EmailChange, type: :model do
     let!(:expired_email_change) { create(:user_email_change, created_at: 1.hour.ago) }
     let!(:email_change) { create(:user_email_change) }
 
-    it { is_expected.to eq([ email_change ]) }
+    it { is_expected.to eq([email_change]) }
   end
 
   describe '.not_changed' do
@@ -53,7 +53,7 @@ RSpec.describe User::EmailChange, type: :model do
     let!(:reset_email_change) { create(:user_email_change, changed_at: 1.hour.ago) }
     let!(:email_change) { create(:user_email_change, changed_at: nil) }
 
-    it { is_expected.to eq([ email_change ]) }
+    it { is_expected.to eq([email_change]) }
   end
 
   describe '.detected_by' do

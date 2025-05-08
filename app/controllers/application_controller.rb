@@ -1,12 +1,13 @@
 class ApplicationController < ActionController::Base
+
   before_action :prepare_exception_notifier
 
   private
 
   def prepare_exception_notifier
-    request.env["exception_notifier.exception_data"] = {
+    request.env['exception_notifier.exception_data'] = {
       current_user:,
-      app: "AppBase"
+      app: 'AppBase',
     }
   end
 
@@ -17,7 +18,7 @@ class ApplicationController < ActionController::Base
   def require_not_user!
     return unless user_signed_in?
 
-    flash[:alert] = "既にログインしています"
+    flash[:alert] = '既にログインしています'
     redirect_to root_path
   end
 
@@ -39,4 +40,5 @@ class ApplicationController < ActionController::Base
     session.delete(:user_id)
     @current_user = nil
   end
+
 end
