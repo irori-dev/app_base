@@ -38,7 +38,7 @@ RSpec.describe User::Core, type: :model do
     let(:user) { create(:user_core) }
     let!(:password_reset) { create(:user_password_reset, user:) }
 
-    it { is_expected.to eq([ password_reset ]) }
+    it { is_expected.to eq([password_reset]) }
   end
 
   describe '#email_changes' do
@@ -46,6 +46,6 @@ RSpec.describe User::Core, type: :model do
     let(:user) { create(:user_core) }
     let!(:email_change) { create(:user_email_change, user:) }
 
-    it { is_expected.to eq([ email_change ]) }
+    it { is_expected.to eq([email_change]) }
   end
 end

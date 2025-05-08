@@ -1,5 +1,7 @@
 module User
+
   def self.table_name_prefix
-    "user_"
+    'user_'
   end
+
 end

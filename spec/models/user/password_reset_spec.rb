@@ -39,7 +39,7 @@ RSpec.describe User::PasswordReset, type: :model do
     let!(:expired_password_reset) { create(:user_password_reset, created_at: 1.hour.ago) }
     let!(:password_reset) { create(:user_password_reset) }
 
-    it { is_expected.to eq([ password_reset ]) }
+    it { is_expected.to eq([password_reset]) }
   end
 
   describe '.not_reset' do
@@ -47,7 +47,7 @@ RSpec.describe User::PasswordReset, type: :model do
     let!(:reset_password_reset) { create(:user_password_reset, reset_at: 1.hour.ago) }
     let!(:password_reset) { create(:user_password_reset, reset_at: nil) }
 
-    it { is_expected.to eq([ password_reset ]) }
+    it { is_expected.to eq([password_reset]) }
   end
 
   describe '.detected_by' do

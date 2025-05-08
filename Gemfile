@@ -4,7 +4,7 @@ git_source(:github) { |repo| 'https://github.com/#{repo}.git' }
 ruby file: ".ruby-version"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
-gem "rails", "~> 8.0.1"
+gem "rails", "~> 8.0.2"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use postgresql as the database for Active Record
@@ -50,9 +50,6 @@ group :development, :test do
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
-
-  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
-  gem "rubocop-rails-omakase", require: false
 end
 
 group :development do
@@ -90,3 +87,11 @@ gem "exception_notification"
 gem "seed-fu"
 
 gem "letter_opener_web"
+
+# downgrade
+gem "stringio", "3.1.2"
+gem "psych", "5.2.2"
+gem "rdoc", "6.10.0"
+gem "reline", "0.6.0"
+gem "irb", "1.14.3"
+gem "json", "2.9.1"

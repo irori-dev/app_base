@@ -1,4 +1,5 @@
 class Admins::AdminCard::Component < ViewComponent::Base
+
   include Turbo::FramesHelper
   with_collection_parameter :admin
 
@@ -14,4 +15,5 @@ class Admins::AdminCard::Component < ViewComponent::Base
   def editable?
     !current_admin?
   end
+
 end

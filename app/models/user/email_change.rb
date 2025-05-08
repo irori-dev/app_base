@@ -1,4 +1,5 @@
 class User::EmailChange < ApplicationRecord
+
   attr_accessor :change_token
 
   EXPIRED_TIME = 30.minutes
@@ -6,13 +7,13 @@ class User::EmailChange < ApplicationRecord
   validates :change_digest, presence: true, uniqueness: true
   validates :email, presence: true
 
-  belongs_to :user, class_name: "User::Core", foreign_key: "user_id"
+  belongs_to :user, class_name: 'User::Core', foreign_key: 'user_id'
 
-  scope :not_expired, -> { where("created_at > ?", EXPIRED_TIME.ago) }
+  scope :not_expired, -> { where('created_at > ?', EXPIRED_TIME.ago) }
   scope :not_changed, -> { where(changed_at: nil) }
   scope :detected_by, lambda { |token|
                         detect(proc {
-                                 raise ArgumentError, "期限切れ、もしくは無効なトークンです"
+                                 raise ArgumentError, '期限切れ、もしくは無効なトークンです'
                                }) { |email_change| email_change.match?(token) }
                       }
 
@@ -44,6 +45,7 @@ class User::EmailChange < ApplicationRecord
   end
 
   class << self
+
     def digest(string)
       cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
       BCrypt::Password.create(string, cost:)
@@ -52,5 +54,7 @@ class User::EmailChange < ApplicationRecord
     def new_token
       SecureRandom.urlsafe_base64
     end
+
   end
+
 end

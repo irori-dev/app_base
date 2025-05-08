@@ -1,7 +1,8 @@
 class Users::PasswordResetsController < Users::BaseController
+
   skip_before_action :require_user!, only: %i[new create edit update]
 
-  layout "narrow"
+  layout 'narrow'
 
   def new; end
 
@@ -18,10 +19,10 @@ class Users::PasswordResetsController < Users::BaseController
   def edit; end
 
   def update
-    raise "パスワードが一致しません" if params[:password] != params[:password_confirmation]
+    raise 'パスワードが一致しません' if params[:password] != params[:password_confirmation]
 
     password_reset = User::PasswordReset.not_expired.not_reset.detected_by(params[:token])
-    raise "期限切れ、もしくは無効なトークンです" if password_reset.blank?
+    raise '期限切れ、もしくは無効なトークンです' if password_reset.blank?
 
     ActiveRecord::Base.transaction do
       password_reset.user.update!(password: params[:password])
@@ -29,9 +30,10 @@ class Users::PasswordResetsController < Users::BaseController
     end
 
     sign_in(password_reset.user)
-    redirect_to root_path, notice: "パスワードを更新し、ログインしました"
+    redirect_to root_path, notice: 'パスワードを更新し、ログインしました'
   rescue StandardError => e
     flash.now[:alert] = e.message
     render :edit, status: :unprocessable_entity
   end
+
 end
