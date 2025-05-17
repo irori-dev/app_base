@@ -9,6 +9,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
       - name: Post Slack Message
         id: slack
         uses: slackapi/slack-github-action@v1.23.0
@@ -34,9 +37,6 @@ jobs:
               ]
             }
       - name: Setup Rails
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
         shell: bash
         run: |
           gem install bundler -v 2.6.8
