@@ -36,6 +36,8 @@ jobs:
       - name: Setup Rails
         shell: bash
         run: |
+          gem install bundler -v 2.6.8
+          bundle config set --local path 'vendor/bundle'
           bundle install
           bin/rails db:create
       - name: Run brakeman
