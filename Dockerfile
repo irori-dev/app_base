@@ -1,20 +1,80 @@
-FROM ruby:3.4.3-slim
+# syntax = docker/dockerfile:1
 
-ENV LANG=ja_JP.UTF-8
-ENV LANGUAGE="ja_JP:ja"
-ENV BUNDLER_VERSION 2.6.8
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
+ARG RUBY_VERSION=3.4.3
+ARG BUNDLER_VERSION=2.6.8
+FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+ARG RAILS_MASTER_KEY
+ARG DATABASE_URL
+ARG CACHE_DATABASE_URL
+ARG QUEUE_DATABASE_URL
+ARG REDIS_URL
+ARG RAILS_ENV
 
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev vim git imagemagick libyaml-dev
-RUN mkdir /app
-WORKDIR /app
-ADD Gemfile /app/Gemfile
-ADD Gemfile.lock /app/Gemfile.lock
-ADD .ruby-version /app/.ruby-version
+# Rails app lives here
+WORKDIR /rails
 
-RUN bundle config set path 'vendor/bundle'
+# Set production environment
+ENV BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development" \
+    RAILS_SERVE_STATIC_FILES="true" \
+    RAILS_ENV=${RAILS_ENV} \
+    RAILS_MASTER_KEY=${RAILS_MASTER_KEY} \
+    DATABASE_URL=${DATABASE_URL} \
+    REDIS_URL=${REDIS_URL} \
+    CACHE_DATABASE_URL=${CACHE_DATABASE_URL} \
+    QUEUE_DATABASE_URL=${QUEUE_DATABASE_URL} \
+    BUNDLER_VERSION=${BUNDLER_VERSION}
+
+# Throw-away build stage to reduce size of final image
+FROM base as build
+
+# Install packages needed to build gems
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential default-libmysqlclient-dev git libvips pkg-config libyaml-dev
+
+# Install application gems
+COPY Gemfile Gemfile.lock .ruby-version ./
+
 RUN gem update --system \
     && gem install bundler -v $BUNDLER_VERSION \
     && bundle install -j 4
 
-RUN bundle install
-ADD . /app
+RUN bundle install && \
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    bundle exec bootsnap precompile --gemfile
+
+# Copy application code
+COPY . .
+
+# Precompile bootsnap code for faster boot times
+RUN bundle exec bootsnap precompile app/ lib/
+
+# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+RUN SECRET_KEY_BASE_DUMMY=1 RAILS_ENV=${RAILS_ENV} ./bin/rails assets:precompile
+
+
+# Final stage for app image
+FROM base
+
+# Install packages needed for deployment
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y curl default-mysql-client libvips && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Copy built artifacts: gems, application
+COPY --from=build /usr/local/bundle /usr/local/bundle
+COPY --from=build /rails /rails
+
+# Run and own only the runtime files as a non-root user for security
+RUN useradd rails --create-home --shell /bin/bash && \
+    chown -R rails:rails db log storage tmp
+USER rails:rails
+
+# Entrypoint prepares the database.
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+
+# Start the server by default, this can be overwritten at runtime
+EXPOSE 3000
+CMD ["./bin/rails", "server"]

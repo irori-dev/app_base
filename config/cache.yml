@@ -7,10 +7,14 @@ default: &default
 
 development:
   <<: *default
-
+  database: cache
 test:
   <<: *default
+  database: cache
+staging:
+  <<: *default
+  database: cache
 
 production:
-  database: cache
   <<: *default
+  database: cache

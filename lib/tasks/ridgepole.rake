@@ -1,4 +1,6 @@
-namespace :ridgepole do
+# frozen_string_literal: true
+
+namespace :ridgepole do # rubocop:disable Metrics/BlockLength
   def rails_env
     ENV.fetch('RAILS_ENV', 'development')
   end
@@ -8,21 +10,31 @@ namespace :ridgepole do
     tables.empty? ? [] : ['--tables', tables.join(',')]
   end
 
+  def database
+    ENV.fetch('DATABASE', 'primary')
+  end
+
   desc 'Export schema definitions'
   task :export do
-    sh 'ridgepole', '--config', 'config/database.yml', '--env', rails_env, '--export', '--split', '--output',
-      'db/schema/Schemafile'
+    schemafile = "db/schema/#{database}/Schemafile"
+
+    sh 'ridgepole', '--config', 'config/database.yml', '-s', database, '--env', rails_env, '--export', '--split',
+      '--output', schemafile
   end
 
   desc 'Show difference between schema definitions and actual schema'
   task :'dry-run' do
-    sh 'ridgepole', '--config', 'config/database.yml', '--env', rails_env, '--apply', '--dry-run', '--file',
-      'db/schema/Schemafile', *tables_option
+    schemafile = "db/schema/#{database}/Schemafile"
+
+    sh 'ridgepole', '--config', 'config/database.yml', '-s', database, '--env', rails_env, '--apply', '--dry-run',
+      '--file', schemafile, *tables_option
   end
 
   desc 'Apply schema definitions'
   task :apply do
-    sh 'ridgepole', '--config', 'config/database.yml', '--env', rails_env, '--apply', '--file', 'db/schema/Schemafile',
-      *tables_option
+    schemafile = "db/schema/#{database}/Schemafile"
+
+    sh 'ridgepole', '--config', 'config/database.yml', '-s', database, '--env', rails_env, '--apply', '--file',
+      schemafile, *tables_option
   end
 end
