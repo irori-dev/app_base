@@ -45,5 +45,5 @@ bundle config set path 'vendor/bundle'
 
 bundle install -j 4
 
-bin/rails db:create
-bin/rails ridgepole:apply
+RAILS_ENV=test bin/rails db:create
+RAILS_ENV=test bin/rails ridgepole:apply
