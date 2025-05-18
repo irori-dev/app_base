@@ -7,8 +7,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
       - name: Post Slack Message
         id: slack
         uses: slackapi/slack-github-action@v1.23.0
@@ -33,26 +33,25 @@ jobs:
                 }
               ]
             }
-      - name: Setup docker
+      - name: Setup Rails
         shell: bash
         run: |
-          docker compose build
-          docker compose run app bundle install
-          docker compose run app bundle exec rails assets:precompile
-          docker compose up -d
-          docker compose exec -T app bundle exec rails db:create
+          gem install bundler -v 2.6.8
+          bundle config set --local path 'vendor/bundle'
+          bundle install
+          RAILS_ENV=test bin/rails db:create
       - name: Run brakeman
         shell: bash
         run: |
-          docker compose exec -T app bin/brakeman
+          bin/brakeman
       - name: Run rubocop
         shell: bash
         run: |
-          docker compose exec -T app bin/rubocop
+          bin/rubocop
       - name: Run rspec
         shell: bash
         run: |
-          docker compose exec -T app bin/rspec
+          bin/rspec
       - name: Update Slack message if test is failed
         if: failure()
         uses: slackapi/slack-github-action@v1.23.0
