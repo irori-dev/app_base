@@ -1,59 +1,88 @@
 # README
 
-Railsアプリケーションを作成するための土台となるリポジトリです。
-このリポジトリをcloneし、gitの設定をresetして新しいapplicationの作成時に活用してください。
+このリポジトリは Rails アプリケーションを素早く作成するためのテンプレートです。
+clone 後に `.git` を削除して新規アプリケーションのベースとして利用してください。
 
-## gitの設定のreset方法
+## git の設定をリセットする手順
 
-ドキュメンテーションします
+```bash
+rm -rf .git
+git init
+git add .
+git commit -m "Initial commit"
+```
+
+任意のリモートリポジトリを追加して開発を開始します。
 
 ## 開発環境
 
-[dip](https://github.com/bibendi/dip)を使用して`docker compose`をwrapperしています。
-(VS Codeを使用している場合はdip upは使用しない方がいいです。Debugの項目を見てみてください。)
+- Ruby 3.4.3 / Rails 8.0.2
+- [dip](https://github.com/bibendi/dip) + docker compose
+  - VS Code の DevContainer を用いる場合は `dip up` を使わず、
+    起動後に `bin/dev` を実行してください。
 
-## 設定の仕様
+初回起動時は次のコマンドで環境を準備します。
+
+```bash
+bin/setup
+bin/dev
+```
+
+## 設定の概要
 
 ### Database
 
-migrationファイルが無数にできるのが嫌なので、[ridgepole](https://github.com/ridgepole/ridgepole)というgemを使用しています。
-`/db/schema/`以下に`.schema`拡張子でファイルを作成するとそのファイルを読み込んでDBを作成します。
-書き方はmigrationファイルと似ているのでそこまでてこずらないと思います。
+デフォルトで PostgreSQL を使用し、マイグレーション管理には
+[ridgepole](https://github.com/ridgepole/ridgepole) を採用しています。
+`db/schema/` 以下に `.schema` ファイルを置くとスキーマが適用されます。
 
 ### 非同期処理
 
-redis, sidekiqが入っています。
-特筆すべきことはないと思います。
+Rails 8 標準の `solid_queue` を利用します。
+ジョブの状態は MissionControl の UI から確認できます。
+コンテナ上では `bin/jobs` を別プロセスで起動してください。
 
-### ページネーション、検索
+### ページネーション・検索
 
-[kaminari](https://github.com/kaminari/kaminari)と[ransack](https://github.com/activerecord-hackery/ransack)を入れています。
-メジャーどころなのでたくさん記事があると思います。
+[kaminari](https://github.com/kaminari/kaminari) と
+[ransack](https://github.com/activerecord-hackery/ransack) を同梱しています。
 
 ### CSS
 
-Tailwind CSS が入っています。hotreloadしてくれるので便利。
+[tailwindcss-rails](https://github.com/rails/tailwindcss-rails) により
+ファイル変更時は自動で再ビルドされます。
 
-### JS
+### JavaScript
 
-Rails7らしく、Hotwireに全のりしています。
-importmap-railsがベースなのでnode_modulesは必要ありません。幸せ。
+Hotwire(Turbo/Stimulus) と importmap を利用しているため
+`node_modules` は不要です。
 
-### view
+### View
 
-hamlを使用しています。
+テンプレートエンジンは Haml を採用し、
+[ViewComponent](https://github.com/ViewComponent/view_component) も利用できます。
+
+### メール
+
+開発環境では [letter_opener_web](https://github.com/fgrehm/letter_opener_web)
+でメール内容をブラウザ確認できます。
+
+### 例外通知
+
+[exception_notification](https://github.com/smartinez87/exception_notification)
+と `slack-notifier` により Slack へエラーを通知できます。
 
 ### 環境変数
 
-`rails:credentials`を使用しています。
-`master.key`が必要になるので持っている人に聞いてください
+`rails credentials` を利用します。`config/master.key` を取得して配置してください。
 
 ## Debug
 
-[こちら](https://corporate.irori.dev/posts/rails-debug-devcontainer-with-foreman)を参考にしてみてください。
-
+VS Code でのデバッグ方法は
+[こちら](https://corporate.irori.dev/posts/rails-debug-devcontainer-with-foreman)
+を参照してください。
 
 ## サンプル実装
 
-`users`と`admins`のresourcesを作成しています。
-参考にしてみてください。
+`users` と `admins` のリソースを簡易的に実装しています。
+ログインやメール送信の仕組みなどを確認するサンプルとして利用してください。
