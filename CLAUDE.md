@@ -38,13 +38,13 @@ This project uses Ridgepole instead of Rails migrations. Schema files are in `/d
 
 ```bash
 # Apply schema changes
-bundle exec rake ridgepole:apply DATABASE=primary
+bin/rails ridgepole:apply DATABASE=primary
 
 # Dry run (show what would change)
-bundle exec rake ridgepole:dry-run DATABASE=primary
+bin/rails ridgepole:dry-run DATABASE=primary
 
 # Export current schema
-bundle exec rake ridgepole:export DATABASE=primary
+bin/rails ridgepole:export DATABASE=primary
 ```
 
 ### Code Quality
