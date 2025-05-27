@@ -24,13 +24,13 @@ docker compose up
 ### Testing
 ```bash
 # Run all tests
-bundle exec rspec
+bin/rspec
 
 # Run specific test file
-bundle exec rspec spec/path/to/test_spec.rb
+bin/rspec spec/path/to/test_spec.rb
 
 # Run specific test
-bundle exec rspec spec/path/to/test_spec.rb:line_number
+bin/rspec spec/path/to/test_spec.rb:line_number
 ```
 
 ### Database Schema Management
