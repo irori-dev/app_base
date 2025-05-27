@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  include Authenticatable
 
   before_action :prepare_exception_notifier
 
@@ -11,9 +12,10 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  def require_user!
-    redirect_to new_users_session_path unless user_signed_in?
-  end
+  # Authenticatable concern methods
+  alias require_user! require_resource!
+  alias current_user current_resource
+  alias user_signed_in? resource_signed_in?
 
   def require_not_user!
     return unless user_signed_in?
@@ -22,23 +24,20 @@ class ApplicationController < ActionController::Base
     redirect_to root_path
   end
 
-  def current_user
-    @current_user ||= User::Core.find_by(id: session[:user_id])
-  end
-  helper_method :current_user
-
-  def user_signed_in?
-    current_user.present?
-  end
-  helper_method :user_signed_in?
-
-  def sign_in(user)
-    session[:user_id] = user.id
+  def resource_class
+    User::Core
   end
 
-  def sign_out
-    session.delete(:user_id)
-    @current_user = nil
+  def session_key
+    :user_id
+  end
+
+  def sign_in_path
+    new_users_session_path
+  end
+
+  def after_sign_in_path
+    root_path
   end
 
 end
