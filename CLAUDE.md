@@ -10,9 +10,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 bundle install
 
 # Apply database schema (using Ridgepole instead of migrations)
-bundle exec rake ridgepole:apply DATABASE=primary
-bundle exec rake ridgepole:apply DATABASE=cache
-bundle exec rake ridgepole:apply DATABASE=queue
+bin/rails ridgepole:apply DATABASE=primary
+bin/rails ridgepole:apply DATABASE=cache
+bin/rails ridgepole:apply DATABASE=queue
 
 # Start development servers using foreman
 foreman start -f Procfile.dev
