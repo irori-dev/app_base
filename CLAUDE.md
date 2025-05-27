@@ -2,6 +2,22 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 重要な開発ルール
+
+### Docker環境での開発
+- **必須**: このプロジェクトはDocker環境を前提としています
+- すべてのコマンドはDockerコンテナ内で実行してください
+- `docker compose exec app <command>` を使用するか、コンテナ内で直接実行
+
+### コード品質チェック
+- **必須**: コード変更後は必ず以下を実行してください：
+  - `bin/rspec` - すべてのテストが通ることを確認
+  - `bin/rubocop` - コーディング規約に準拠していることを確認
+
+### テストの追加
+- **必須**: 機能追加や修正を行った場合は、対応するspecファイルも追加・更新してください
+- テストなしのコード変更は受け入れられません
+
 ## Essential Commands
 
 ### Development Setup
