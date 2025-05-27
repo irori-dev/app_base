@@ -50,10 +50,10 @@ bin/rails ridgepole:export DATABASE=primary
 ### Code Quality
 ```bash
 # Run RuboCop for code style
-bundle exec rubocop
+bin/rubocop
 
 # Run Brakeman for security analysis
-bundle exec brakeman
+bin/brakeman
 ```
 
 ## Architecture Overview
