@@ -1,25 +1,14 @@
 class Users::SessionsController < Users::BaseController
+  include SessionManageable
 
-  skip_before_action :require_user!, only: %i[new create]
+  private
 
-  def new; end
-
-  def create
-    user = User::Core.find_by(email: params[:email])
-    if user&.authenticate(params[:password])
-      sign_in(user)
-      flash[:notice] = 'ログインしました'
-      redirect_to mypage_users_path
-    else
-      flash.now[:alert] = 'メールアドレスまたはパスワードが違います'
-      render :new, status: :unprocessable_entity
-    end
+  def after_sign_in_path
+    mypage_users_path
   end
 
-  def destroy
-    sign_out
-    flash[:notice] = 'ログアウトしました'
-    redirect_to root_path
+  def after_sign_out_path
+    root_path
   end
 
 end
