@@ -15,11 +15,11 @@ class User::EmailChange < ApplicationRecord
   alias change_token token
 
   def change_digest
-    digest
+    self[:change_digest]
   end
 
   def change_digest=(value)
-    self.digest = value
+    self[:change_digest] = value
   end
 
   def send_email_changed_email

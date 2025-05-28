@@ -5,8 +5,8 @@ module SessionManageable
   extend ActiveSupport::Concern
 
   included do
-    skip_before_action :require_user!, only: %i[new create], if: -> { defined?(Users::BaseController) && is_a?(Users::BaseController) }
-    skip_before_action :require_admin!, only: %i[new create], if: -> { defined?(Admins::BaseController) && is_a?(Admins::BaseController) }
+    skip_before_action :require_user!, only: %i[new create] if defined?(Users::BaseController) && self < Users::BaseController
+    skip_before_action :require_admin!, only: %i[new create] if defined?(Admins::BaseController) && self < Admins::BaseController
   end
 
   def new; end
