@@ -4,10 +4,12 @@ class User::EmailChange < ApplicationRecord
   EXPIRED_TIME = 30.minutes
 
   validates :email, presence: true
+  validates :change_digest, presence: true, uniqueness: true
 
   belongs_to :user, class_name: 'User::Core', foreign_key: 'user_id'
 
   scope :not_changed, -> { where(changed_at: nil) }
+  scope :not_expired, -> { where('created_at > ?', EXPIRED_TIME.ago) }
 
   alias change_token token
 
@@ -33,6 +35,6 @@ class User::EmailChange < ApplicationRecord
   private
 
   def digest_column
-    :change_digest
+    'change_digest'
   end
 end

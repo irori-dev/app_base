@@ -13,7 +13,7 @@ module SessionManageable
   def create
     resource = resource_class.find_by(email: params[:email])
     if resource&.authenticate(params[:password])
-      sign_in(resource)
+      sign_in_resource(resource)
       flash[:notice] = 'ログインしました'
       redirect_to after_sign_in_path
     else
@@ -23,7 +23,7 @@ module SessionManageable
   end
 
   def destroy
-    sign_out
+    sign_out_resource
     flash[:notice] = 'ログアウトしました'
     redirect_to after_sign_out_path
   end
@@ -50,5 +50,17 @@ module SessionManageable
 
   def after_sign_in_path
     raise NotImplementedError, "#{self.class} must define after_sign_in_path"
+  end
+
+  def sign_in_resource(resource)
+    if is_a?(Admins::BaseController)
+      sign_in(resource)  # Use admin's sign_in method
+    else
+      sign_in(resource)  # Use application's sign_in method
+    end
+  end
+
+  def sign_out_resource
+    sign_out  # Both controllers have sign_out method
   end
 end

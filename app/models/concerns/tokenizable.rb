@@ -6,14 +6,24 @@ module Tokenizable
   included do
     attr_accessor :token
 
-    validates digest_column, presence: true, uniqueness: true
-
-    scope :not_expired, -> { where('created_at > ?', const_get(:EXPIRED_TIME).ago) }
-    scope :detected_by, lambda { |token|
-      not_expired.detect(proc { raise ArgumentError, '期限切れ、もしくは無効なトークンです' }) { |record| record.match?(token) }
-    }
-
     after_initialize :create_digest, if: :new_record?
+  end
+
+  class_methods do
+    def digest(string)
+      cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
+      BCrypt::Password.create(string, cost:)
+    end
+
+    def new_token
+      SecureRandom.urlsafe_base64
+    end
+
+    def detected_by(token)
+      candidates = not_expired.to_a
+      found = candidates.find { |record| record.match?(token) }
+      found || (raise ArgumentError, '期限切れ、もしくは無効なトークンです')
+    end
   end
 
   def match?(token)
@@ -39,14 +49,4 @@ module Tokenizable
     raise NotImplementedError, "#{self.class} must define digest_column method"
   end
 
-  class_methods do
-    def digest(string)
-      cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
-      BCrypt::Password.create(string, cost:)
-    end
-
-    def new_token
-      SecureRandom.urlsafe_base64
-    end
-  end
 end

@@ -3,9 +3,12 @@ class User::PasswordReset < ApplicationRecord
 
   EXPIRED_TIME = 30.minutes
 
+  validates :reset_digest, presence: true, uniqueness: true
+
   belongs_to :user, class_name: 'User::Core', foreign_key: 'user_id'
 
   scope :not_reset, -> { where(reset_at: nil) }
+  scope :not_expired, -> { where('created_at > ?', EXPIRED_TIME.ago) }
 
   alias reset_token token
 
@@ -28,6 +31,6 @@ class User::PasswordReset < ApplicationRecord
   private
 
   def digest_column
-    :reset_digest
+    'reset_digest'
   end
 end
