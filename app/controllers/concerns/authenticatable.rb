@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Authenticatable
+
   extend ActiveSupport::Concern
 
   included do
@@ -50,4 +51,5 @@ module Authenticatable
   def after_sign_in_path
     raise NotImplementedError, "#{self.class}#after_sign_in_path must be implemented"
   end
+
 end

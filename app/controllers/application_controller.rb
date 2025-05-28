@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+
   include Authenticatable
 
   before_action :prepare_exception_notifier
