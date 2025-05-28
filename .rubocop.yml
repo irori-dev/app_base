@@ -1,7 +1,7 @@
 Style/FrozenStringLiteralComment:
   Enabled: false
 AllCops:
-  TargetRubyVersion: 3.4.3
+  TargetRubyVersion: 3.4.4
   NewCops: enable
   SuggestExtensions: false
   Exclude:
