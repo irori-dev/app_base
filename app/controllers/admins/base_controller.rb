@@ -1,4 +1,5 @@
 class Admins::BaseController < ApplicationController
+
   include Authenticatable
 
   before_action :prepare_exception_notifier
