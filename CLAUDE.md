@@ -1,119 +1,135 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+このファイルは、このリポジトリでコードを扱う際のClaude Code (claude.ai/code) へのガイダンスを提供します。
 
 ## 重要な開発ルール
 
 ### Docker環境での開発
+
 - **必須**: このプロジェクトはDocker環境を前提としています
 - すべてのコマンドはDockerコンテナ内で実行してください
 - `docker compose exec app <command>` を使用するか、コンテナ内で直接実行
 
 ### コード品質チェック
+
 - **必須**: コード変更後は必ず以下を実行してください：
   - `bin/rspec` - すべてのテストが通ることを確認
   - `bin/rubocop` - コーディング規約に準拠していることを確認
 
 ### テストの追加
+
 - **必須**: 機能追加や修正を行った場合は、対応するspecファイルも追加・更新してください
 - テストなしのコード変更は受け入れられません
 
-## Essential Commands
+## 基本コマンド
 
-### Development Setup
+### 開発環境のセットアップ
+
 ```bash
-# Install dependencies
+# 依存関係のインストール
 bundle install
 
-# Apply database schema (using Ridgepole instead of migrations)
+# データベーススキーマの適用（マイグレーションの代わりにRidgepoleを使用）
 bin/rails ridgepole:apply DATABASE=primary
 bin/rails ridgepole:apply DATABASE=cache
 bin/rails ridgepole:apply DATABASE=queue
 
-# Start development servers using foreman
-foreman start -f Procfile.dev
+# foremanを使用して開発サーバーを起動
+bin/dev
 
-# Or with Docker
+# またはDockerで
 docker compose up
 ```
 
-### Testing
+### テスト
+
 ```bash
-# Run all tests
+# すべてのテストを実行
 bin/rspec
 
-# Run specific test file
+# 特定のテストファイルを実行
 bin/rspec spec/path/to/test_spec.rb
 
-# Run specific test
+# 特定のテストを実行
 bin/rspec spec/path/to/test_spec.rb:line_number
 ```
 
-### Database Schema Management
-This project uses Ridgepole instead of Rails migrations. Schema files are in `/db/schema/`.
+### データベーススキーマ管理
+
+このプロジェクトはRailsマイグレーションの代わりにRidgepoleを使用しています。スキーマファイルは `/db/schema/` にあります。
 
 ```bash
-# Apply schema changes
+# スキーマ変更の適用
 bin/rails ridgepole:apply DATABASE=primary
 
-# Dry run (show what would change)
+# ドライラン（何が変更されるかを表示）
 bin/rails ridgepole:dry-run DATABASE=primary
 
-# Export current schema
+# 現在のスキーマをエクスポート
 bin/rails ridgepole:export DATABASE=primary
 ```
 
-### Code Quality
+### コード品質
+
 ```bash
-# Run RuboCop for code style
+# コードスタイルのためのRuboCopを実行
 bin/rubocop
 
-# Run Brakeman for security analysis
+# セキュリティ分析のためのBrakemanを実行
 bin/brakeman
 ```
 
-## Architecture Overview
+## アーキテクチャ概要
 
-### Multi-Database Setup
-The application uses three separate databases:
-- **primary**: Main application data (users, admins, contacts)
-- **cache**: Solid Cache storage
-- **queue**: Solid Queue job processing
+### マルチデータベース構成
 
-### Authentication System
-- **User Authentication**: Located in `app/models/user/core.rb` with password reset (`user/password_reset.rb`) and email change (`user/email_change.rb`) functionality
-- **Admin Authentication**: Separate model in `app/models/admin.rb`
-- Both use `has_secure_password` with bcrypt
+アプリケーションは3つの独立したデータベースを使用しています：
 
-### Component Architecture
-- Uses ViewComponent for UI components in `app/components/`
-- Components are organized by namespace (admins/, users/, shared components)
-- Each component has a Ruby class and HAML template
+- **primary**: メインアプリケーションデータ（ユーザー、管理者、連絡先）
+- **cache**: Solid Cacheストレージ
+- **queue**: Solid Queueジョブ処理
 
-### Frontend Stack
-- **Hotwire**: Turbo + Stimulus for SPA-like interactions
-- **Tailwind CSS**: Utility-first CSS framework with hot reload
-- **ImportMap**: No node_modules required, JavaScript modules served directly
+### 認証システム
 
-### Background Jobs
-- Uses Solid Queue (database-backed) instead of Redis/Sidekiq
-- Job classes in `app/jobs/`
-- Monitoring available via Mission Control
+- **ユーザー認証**: `app/models/user/core.rb` に配置され、パスワードリセット（`user/password_reset.rb`）とメール変更（`user/email_change.rb`）機能を含む
+- **管理者認証**: `app/models/admin.rb` の独立したモデル
+- 両方ともbcryptで `has_secure_password` を使用
 
-### Testing Approach
-- RSpec for all tests
-- FactoryBot for test data generation
-- Capybara for system tests with Selenium
-- WebMock for external API mocking
-- Tests automatically apply Ridgepole schema before running
+### コンポーネントアーキテクチャ
 
-### Key Directories
-- `/app/controllers/admins/`: Admin-specific controllers with base authentication
-- `/app/controllers/users/`: User-specific controllers  
-- `/app/views/svgs/`: SVG icons as HAML partials
-- `/db/schema/`: Database schema definitions for Ridgepole
+- `app/components/` のUIコンポーネントにViewComponentを使用
+- コンポーネントは名前空間で整理（admins/、users/、共有コンポーネント）
+- 各コンポーネントはRubyクラスとHAMLテンプレートを持つ
 
-### Environment Configuration
-- Uses Rails credentials for secrets
-- Development uses Letter Opener for email preview
-- Exception notifications sent to Slack in production
+### フロントエンドスタック
+
+- **Hotwire**: SPA風のインタラクションのためのTurbo + Stimulus
+- **Tailwind CSS**: ホットリロード付きのユーティリティファーストCSSフレームワーク
+- **ImportMap**: node_modulesが不要、JavaScriptモジュールを直接提供
+
+### バックグラウンドジョブ
+
+- Redis/Sidekiqの代わりにSolid Queue（データベースベース）を使用
+- `app/jobs/` のジョブクラス
+- Mission Control経由でモニタリング可能
+
+### テストアプローチ
+
+- すべてのテストにRSpec
+- テストデータ生成にFactoryBot
+- SeleniumでのシステムテストにCapybara
+- 外部APIモッキングにWebMock
+- テストは実行前に自動的にRidgepoleスキーマを適用
+
+### 主要ディレクトリ
+
+- `/app/controllers/admins/`: ベース認証付きの管理者専用コントローラー
+- `/app/controllers/users/`: ユーザー専用コントローラー
+- `/app/views/svgs/`: HAMLパーシャルとしてのSVGアイコン
+- `/db/schema/`: Ridgepole用のデータベーススキーマ定義
+
+### 環境設定
+
+- シークレット用にRails credentialsを使用
+- 開発環境ではメールプレビュー用にLetter Openerを使用
+- 本番環境では例外通知をSlackに送信
