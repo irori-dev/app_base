@@ -14,11 +14,11 @@ class User::PasswordReset < ApplicationRecord
   alias reset_token token
 
   def reset_digest
-    digest
+    self[:reset_digest]
   end
 
   def reset_digest=(value)
-    self.digest = value
+    self[:reset_digest] = value
   end
 
   def send_password_reset_email
