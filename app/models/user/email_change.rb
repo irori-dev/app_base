@@ -1,4 +1,5 @@
 class User::EmailChange < ApplicationRecord
+
   include Tokenizable
 
   EXPIRED_TIME = 30.minutes
@@ -37,4 +38,5 @@ class User::EmailChange < ApplicationRecord
   def digest_column
     'change_digest'
   end
+
 end

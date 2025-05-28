@@ -1,4 +1,5 @@
 class User::PasswordReset < ApplicationRecord
+
   include Tokenizable
 
   EXPIRED_TIME = 30.minutes
@@ -33,4 +34,5 @@ class User::PasswordReset < ApplicationRecord
   def digest_column
     'reset_digest'
   end
+
 end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module SessionManageable
+
   extend ActiveSupport::Concern
 
   included do
@@ -53,14 +54,11 @@ module SessionManageable
   end
 
   def sign_in_resource(resource)
-    if is_a?(Admins::BaseController)
-      sign_in(resource)  # Use admin's sign_in method
-    else
-      sign_in(resource)  # Use application's sign_in method
-    end
+    sign_in(resource)
   end
 
   def sign_out_resource
-    sign_out  # Both controllers have sign_out method
+    sign_out # Both controllers have sign_out method
   end
+
 end

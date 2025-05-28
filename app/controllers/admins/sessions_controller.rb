@@ -1,4 +1,5 @@
 class Admins::SessionsController < Admins::BaseController
+
   include SessionManageable
 
   layout 'narrow'
