@@ -4,7 +4,8 @@ module SessionManageable
   extend ActiveSupport::Concern
 
   included do
-    skip_before_action :require_resource!, only: %i[new create]
+    skip_before_action :require_user!, only: %i[new create], if: -> { defined?(Users::BaseController) && is_a?(Users::BaseController) }
+    skip_before_action :require_admin!, only: %i[new create], if: -> { defined?(Admins::BaseController) && is_a?(Admins::BaseController) }
   end
 
   def new; end
@@ -29,7 +30,25 @@ module SessionManageable
 
   private
 
+  def resource_class
+    if is_a?(Admins::BaseController)
+      Admin
+    elsif is_a?(Users::BaseController)
+      User::Core
+    else
+      raise NotImplementedError, "#{self.class} must define resource_class"
+    end
+  end
+
   def after_sign_out_path
-    sign_in_path
+    if is_a?(Admins::BaseController)
+      new_admins_session_path
+    else
+      root_path
+    end
+  end
+
+  def after_sign_in_path
+    raise NotImplementedError, "#{self.class} must define after_sign_in_path"
   end
 end

@@ -10,13 +10,18 @@ class User::EmailChange < ApplicationRecord
   scope :not_changed, -> { where(changed_at: nil) }
 
   alias change_token token
-  alias change_digest digest
-  alias change_digest= digest=
+
+  def change_digest
+    digest
+  end
+
+  def change_digest=(value)
+    self.digest = value
+  end
 
   def send_email_changed_email
     EmailChangeMailer.for_user(self).deliver_now
   end
-
 
   def change!
     ActiveRecord::Base.transaction do
@@ -25,5 +30,9 @@ class User::EmailChange < ApplicationRecord
     end
   end
 
+  private
 
+  def digest_column
+    :change_digest
+  end
 end

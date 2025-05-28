@@ -8,17 +8,26 @@ class User::PasswordReset < ApplicationRecord
   scope :not_reset, -> { where(reset_at: nil) }
 
   alias reset_token token
-  alias reset_digest digest
-  alias reset_digest= digest=
+
+  def reset_digest
+    digest
+  end
+
+  def reset_digest=(value)
+    self.digest = value
+  end
 
   def send_password_reset_email
     PasswordResetMailer.for_user(self).deliver_now
   end
 
-
   def reset!
     update!(reset_at: Time.current)
   end
 
+  private
 
+  def digest_column
+    :reset_digest
+  end
 end
