@@ -16,7 +16,7 @@ git commit -m "Initial commit"
 
 ## 開発環境
 
-- Ruby 3.4.3 / Rails 8.0.2
+- Ruby 3.4.4 / Rails 8.0.2
 - [dip](https://github.com/bibendi/dip) + docker compose
   - VS Code の DevContainer を用いる場合は `dip up` を使わず、
     起動後に `bin/dev` を実行してください。
