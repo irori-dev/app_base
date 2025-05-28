@@ -1,5 +1,7 @@
 class Admins::BaseController < ApplicationController
 
+  include Authenticatable
+
   before_action :prepare_exception_notifier
   before_action :require_admin!
 
@@ -7,26 +9,25 @@ class Admins::BaseController < ApplicationController
 
   private
 
-  def require_admin!
-    redirect_to Rails.application.routes.url_helpers.new_admins_session_path unless admin_signed_in?
+  # Authenticatable concern methods
+  alias require_admin! require_resource!
+  alias current_admin current_resource
+  alias admin_signed_in? resource_signed_in?
+
+  def resource_class
+    Admin
   end
 
-  def current_admin
-    @current_admin ||= Admin.find_by(id: session[:admin_id])
-  end
-  helper_method :current_admin
-
-  def admin_signed_in?
-    current_admin.present?
+  def session_key
+    :admin_id
   end
 
-  def sign_in(admin)
-    session[:admin_id] = admin.id
+  def sign_in_path
+    Rails.application.routes.url_helpers.new_admins_session_path
   end
 
-  def sign_out
-    session.delete(:admin_id)
-    @current_admin = nil
+  def after_sign_in_path
+    Rails.application.routes.url_helpers.admins_root_path
   end
 
   def prepare_exception_notifier
