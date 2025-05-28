@@ -1,6 +1,6 @@
 class User::PasswordReset < ApplicationRecord
 
-  attr_accessor :reset_token
+  include Tokenizable
 
   EXPIRED_TIME = 30.minutes
 
@@ -8,25 +8,21 @@ class User::PasswordReset < ApplicationRecord
 
   belongs_to :user, class_name: 'User::Core', foreign_key: 'user_id'
 
-  scope :not_expired, -> { where('created_at > ?', EXPIRED_TIME.ago) }
   scope :not_reset, -> { where(reset_at: nil) }
-  scope :detected_by, lambda { |token|
-                        detect(proc {
-                                 raise ArgumentError, '期限切れ、もしくは無効なトークンです'
-                               }) { |password_reset| password_reset.match?(token) }
-                      }
+  scope :not_expired, -> { where('created_at > ?', EXPIRED_TIME.ago) }
 
-  def initialize(attributes = {})
-    super
-    create_reset_digest
+  alias reset_token token
+
+  def reset_digest
+    self[:reset_digest]
+  end
+
+  def reset_digest=(value)
+    self[:reset_digest] = value
   end
 
   def send_password_reset_email
     PasswordResetMailer.for_user(self).deliver_now
-  end
-
-  def match?(token)
-    BCrypt::Password.new(reset_digest).is_password?(token)
   end
 
   def reset!
@@ -35,22 +31,8 @@ class User::PasswordReset < ApplicationRecord
 
   private
 
-  def create_reset_digest
-    self.reset_token = User::PasswordReset.new_token
-    self.reset_digest = User::PasswordReset.digest(reset_token)
-  end
-
-  class << self
-
-    def digest(string)
-      cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : BCrypt::Engine.cost
-      BCrypt::Password.create(string, cost:)
-    end
-
-    def new_token
-      SecureRandom.urlsafe_base64
-    end
-
+  def digest_column
+    'reset_digest'
   end
 
 end

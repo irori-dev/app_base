@@ -4,7 +4,7 @@ class Admins::UsersController < Admins::BaseController
     @search = User::Core.ransack(params[:q])
     @search.sorts = 'id desc' if @search.sorts.empty?
 
-    @users = @search.result.page(params[:page])
+    @users = @search.result.includes(:password_resets, :email_changes).page(params[:page])
   end
 
   def show
