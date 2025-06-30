@@ -42,3 +42,5 @@
 !.vscode/settings.json
 
 /vendor/bundle
+
+/config/credentials/production.key
