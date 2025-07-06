@@ -4,11 +4,11 @@
 ARG RUBY_VERSION=3.4.4
 ARG BUNDLER_VERSION=2.6.8
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
+ARG BUNDLER_VERSION
 ARG RAILS_MASTER_KEY
 ARG DATABASE_URL
 ARG CACHE_DATABASE_URL
 ARG QUEUE_DATABASE_URL
-ARG REDIS_URL
 ARG RAILS_ENV
 
 # Rails app lives here
@@ -22,17 +22,19 @@ ENV BUNDLE_DEPLOYMENT="1" \
     RAILS_ENV=${RAILS_ENV} \
     RAILS_MASTER_KEY=${RAILS_MASTER_KEY} \
     DATABASE_URL=${DATABASE_URL} \
-    REDIS_URL=${REDIS_URL} \
     CACHE_DATABASE_URL=${CACHE_DATABASE_URL} \
     QUEUE_DATABASE_URL=${QUEUE_DATABASE_URL} \
     BUNDLER_VERSION=${BUNDLER_VERSION}
 
 # Throw-away build stage to reduce size of final image
 FROM base as build
+ARG BUNDLER_VERSION=2.6.8
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential default-libmysqlclient-dev git libvips pkg-config libyaml-dev
+    apt-get install --no-install-recommends -y build-essential libpq-dev git libvips pkg-config libyaml-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install application gems
 COPY Gemfile Gemfile.lock .ruby-version ./
@@ -52,15 +54,15 @@ COPY . .
 RUN bundle exec bootsnap precompile app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 RAILS_ENV=${RAILS_ENV} ./bin/rails assets:precompile
-
+RUN SECRET_KEY_BASE_DUMMY=1 RAILS_ENV=${RAILS_ENV} DATABASE_URL=postgresql://dummy:dummy@localhost/dummy CACHE_DATABASE_URL=postgresql://dummy:dummy@localhost/dummy_cache QUEUE_DATABASE_URL=postgresql://dummy:dummy@localhost/dummy_queue ./bin/rails assets:precompile
 
 # Final stage for app image
 FROM base
+ARG BUNDLER_VERSION=2.6.8
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl default-mysql-client libvips && \
+    apt-get install --no-install-recommends -y curl default-mysql-client libvips libpq5 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
