@@ -1,0 +1,121 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 既存インフラ利用・app-base Fargateサービス＆ALBルール最小テンプレ
+
+Parameters:
+  AppName:
+    Type: String
+    Default: app-base
+  AppImage:
+    Type: String
+    Default: 435917083888.dkr.ecr.ap-northeast-1.amazonaws.com/app-base:latest
+  AppPort:
+    Type: Number
+    Default: 3000
+  HostName:
+    Type: String
+    Default: appbase.workshop-app.net
+  ListenerRulePriority:
+    Type: Number
+    Default: 100
+
+  # 既存リソース
+  ClusterName:
+    Type: String
+    Default: workshop-app-prod-cluster
+  SubnetIds:
+    Type: CommaDelimitedList
+    Default: "subnet-007a22c02b8945a19,subnet-0c1f81ed39188b773"
+  FargateSgId:
+    Type: String
+    Default: sg-074598d362d105f42
+  AlbListenerArn:
+    Type: String
+    Default: arn:aws:elasticloadbalancing:ap-northeast-1:435917083888:listener/app/workshop-app-prod-alb/7aa0910a0c85959e/afe92482bb237c19
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Default: vpc-0f9bfe9c5d7e23930
+
+  # SSM Parameter Store（Secrets）ARN
+  DatabaseUrlArn:
+    Type: String
+    Default: arn:aws:ssm:ap-northeast-1:xxxx:parameter/app_base/prod/DATABASE_URL
+  CacheDatabaseUrlArn:
+    Type: String
+    Default: arn:aws:ssm:ap-northeast-1:xxxx:parameter/app_base/prod/CACHE_DATABASE_URL
+  QueueDatabaseUrlArn:
+    Type: String
+    Default: arn:aws:ssm:ap-northeast-1:xxxx:parameter/app_base/prod/QUEUE_DATABASE_URL
+  RailsMasterKeyArn:
+    Type: String
+    Default: arn:aws:ssm:ap-northeast-1:435917083888:parameter/app_base/prod/RAILS_MASTER_KEY
+
+Resources:
+  AppTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      VpcId: !Ref VpcId
+      Port: !Ref AppPort
+      Protocol: HTTP
+      TargetType: ip
+      HealthCheckPath: /
+      Matcher:
+        HttpCode: '200'
+
+  AppTaskDef:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub "${AppName}-taskdef"
+      Cpu: '256'
+      Memory: '512'
+      NetworkMode: awsvpc
+      RequiresCompatibilities: [FARGATE]
+      ContainerDefinitions:
+        - Name: !Ref AppName
+          Image: !Ref AppImage
+          PortMappings:
+            - ContainerPort: !Ref AppPort
+          Secrets:
+            - Name: DATABASE_URL
+              ValueFrom: !Ref DatabaseUrlArn
+            - Name: CACHE_DATABASE_URL
+              ValueFrom: !Ref CacheDatabaseUrlArn
+            - Name: QUEUE_DATABASE_URL
+              ValueFrom: !Ref QueueDatabaseUrlArn
+            - Name: RAILS_MASTER_KEY
+              ValueFrom: !Ref RailsMasterKeyArn
+
+  AppService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref ClusterName
+      LaunchType: FARGATE
+      DesiredCount: 1
+      TaskDefinition: !Ref AppTaskDef
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: DISABLED
+          Subnets: !Ref SubnetIds
+          SecurityGroups: [!Ref FargateSgId]
+      LoadBalancers:
+        - TargetGroupArn: !Ref AppTargetGroup
+          ContainerName: !Ref AppName
+          ContainerPort: !Ref AppPort
+
+  AppListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      ListenerArn: !Ref AlbListenerArn
+      Priority: !Ref ListenerRulePriority
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref AppTargetGroup
+      Conditions:
+        - Field: host-header
+          Values:
+            - !Ref HostName
+
+Outputs:
+  ServiceName:
+    Value: !Ref AppService
+  TargetGroupArn:
+    Value: !Ref AppTargetGroup
