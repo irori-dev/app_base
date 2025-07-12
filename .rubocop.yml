@@ -39,7 +39,7 @@ Style/ClassAndModuleChildren:
   EnforcedStyle: compact
 Lint/MissingSuper:
   Enabled: false
-Naming/PredicateName:
+Naming/PredicatePrefix:
   ForbiddenPrefixes:
     - is_
     - have_

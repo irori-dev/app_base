@@ -51,12 +51,14 @@ group :development, :test do
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
   gem "rubocop"
-  gem "sqlite3", ">= 2.1"
 end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  
+  # N+1 queries detection
+  gem "bullet"
 end
 
 group :test do

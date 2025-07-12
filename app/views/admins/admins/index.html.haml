@@ -22,5 +22,5 @@
     %p.font-bold
       アクション
 = turbo_frame_tag "admins-page-#{@admins.current_page}" do
-  = render Admins::AdminCard::Component.with_collection(@admins, current_admin:)
+  = render Admins::AdminCard::Component.with_collection(@admins, current_admin: current_admin)
   = turbo_frame_tag "admins-page-#{@admins.next_page}", loading: :lazy, src: path_to_next_page(@admins)

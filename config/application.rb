@@ -21,6 +21,8 @@ module Myapp
     config.autoload_paths += %W[#{config.root}/lib]
     config.allow_origins = Rails.application.credentials.dig(:allow_origins) || []
 
+    config.silence_healthcheck_path = "/up"
+
     config.action_controller.default_url_options = if Rails.env == "development" || Rails.env == "test"
       { host: ENV["HOST"], port: ENV["PORT"] }
     else

@@ -2,9 +2,27 @@ FROM ruby:3.4.4-slim
 
 ENV LANG=ja_JP.UTF-8
 ENV LANGUAGE="ja_JP:ja"
-ENV BUNDLER_VERSION 2.6.8
+ENV BUNDLER_VERSION=2.6.9
+ENV NODE_VERSION=24
 
-RUN apt-get update -qq && apt-get install -y build-essential libpq-dev vim git imagemagick libyaml-dev
+# 必要なパッケージのインストール
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    vim \
+    git \
+    imagemagick \
+    libyaml-dev \
+    curl \
+    ca-certificates && \
+    # Node.js のインストール（NodeSource経由）
+    curl -fsSL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - && \
+    apt-get install -y nodejs && \
+    # キャッシュ削除
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN mkdir /app
 WORKDIR /app
 ADD Gemfile /app/Gemfile
@@ -15,6 +33,8 @@ RUN bundle config set path 'vendor/bundle'
 RUN gem update --system \
     && gem install bundler -v $BUNDLER_VERSION \
     && bundle install -j 4
+
+RUN npm install -g @anthropic-ai/claude-code
 
 RUN bundle install
 ADD . /app

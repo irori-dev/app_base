@@ -1,0 +1,86 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.4.4'
+        bundler-cache: true
+    
+    - name: Install Chrome for system tests
+      run: |
+        sudo wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+    
+    - name: Setup database
+      env:
+        RAILS_ENV: test
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/app_base_test
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        PGPASSWORD: postgres
+      run: |
+        # Create all databases
+        createdb -h localhost -U postgres app_base_test || true
+        createdb -h localhost -U postgres cache_test || true
+        createdb -h localhost -U postgres queue_test || true
+        
+        # Apply schemas
+        bin/rails ridgepole:apply DATABASE=primary
+        bin/rails ridgepole:apply DATABASE=cache
+        bin/rails ridgepole:apply DATABASE=queue
+        
+        # Precompile assets for test environment
+        bin/rails assets:precompile
+    
+    - name: Run tests
+      env:
+        RAILS_ENV: test
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/app_base_test
+        CI: true
+      run: bin/rspec
+    
+    - name: Run RuboCop
+      run: bin/rubocop
+    
+    - name: Run Brakeman
+      run: bin/brakeman -q -w2
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build Docker image
+      run: docker build -t app-base:test .
+    
+    - name: Test Docker image
+      run: |
+        docker run --rm app-base:test ./bin/rails --version
+        docker run --rm app-base:test ruby --version

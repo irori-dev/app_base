@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # Health check endpoint
+  get "up" => "rails/health#show", as: :rails_health_check
+  
   namespace :admins do
     resource :session, only: %i[new create destroy]
     resources :users, only: %i[index show] do
@@ -11,6 +14,9 @@ Rails.application.routes.draw do
       get :sent, on: :collection
     end
     resources :admins, only: %i[index new create edit update destroy]
+    
+    # エラーテスト用エンドポイント（アラート通知のテスト用）
+    get "errors/trigger", to: "errors#trigger"
   end
 
   namespace :users do
