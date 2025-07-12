@@ -20,24 +20,24 @@ development:
     database: queue_development
 
 test:
+  <% if ENV['DATABASE_URL'].present? %>
+  primary:
+    url: <%= ENV['DATABASE_URL'] %>
+  cache:
+    url: <%= ENV['DATABASE_URL'].sub(/app_base_test/, 'cache_test') %>
+  queue:
+    url: <%= ENV['DATABASE_URL'].sub(/app_base_test/, 'queue_test') %>
+  <% else %>
   primary:
     <<: *default
     database: app_test
-    <% if ENV['DATABASE_URL'].present? %>
-    url: <%= ENV['DATABASE_URL'] %>
-    <% end %>
   cache:
     <<: *default
     database: cache_test
-    <% if ENV['DATABASE_URL'].present? %>
-    url: <%= ENV['DATABASE_URL'].sub(/app_base_test/, 'cache_test') %>
-    <% end %>
   queue:
     <<: *default
     database: queue_test
-    <% if ENV['DATABASE_URL'].present? %>
-    url: <%= ENV['DATABASE_URL'].sub(/app_base_test/, 'queue_test') %>
-    <% end %>
+  <% end %>
 
 staging:
   primary:

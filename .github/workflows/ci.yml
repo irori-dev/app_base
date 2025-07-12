@@ -33,6 +33,13 @@ jobs:
         ruby-version: '3.4.4'
         bundler-cache: true
     
+    - name: Install Chrome for system tests
+      run: |
+        sudo wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+        sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable
+    
     # Slack notification (optional - requires SLACK_BOT_TOKEN and SLACK_CHANNEL_ID secrets)
     - name: Post Slack notification - Start
       id: slack
@@ -87,12 +94,17 @@ jobs:
         bin/rails ridgepole:apply DATABASE=primary
         bin/rails ridgepole:apply DATABASE=cache
         bin/rails ridgepole:apply DATABASE=queue
+        
+        # Precompile assets for test environment
+        bin/rails assets:precompile
     
     - name: Run tests
       env:
         RAILS_ENV: test
         DATABASE_URL: postgres://postgres:postgres@localhost:5432/app_base_test
         BACKTRACE: 1
+        CI: true
+        CHROME_DRIVER_PATH: /usr/bin/chromedriver
       run: |
         # Show database configuration
         bin/rails runner "puts Rails.configuration.database_configuration.to_yaml"
