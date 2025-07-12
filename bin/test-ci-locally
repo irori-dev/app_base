@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -e
+
+echo "=== Simulating CI environment locally ==="
+
+# Clean up existing test databases
+export RAILS_ENV=test
+export DATABASE_URL=postgres://postgres:password@db:5432/app_base_test
+
+echo "Dropping existing databases..."
+dropdb -h db -U postgres app_base_test --if-exists
+dropdb -h db -U postgres cache_test --if-exists
+dropdb -h db -U postgres queue_test --if-exists
+
+echo "Creating databases..."
+createdb -h db -U postgres app_base_test
+createdb -h db -U postgres cache_test
+createdb -h db -U postgres queue_test
+
+echo "Applying schemas..."
+bin/rails ridgepole:apply DATABASE=primary
+bin/rails ridgepole:apply DATABASE=cache
+bin/rails ridgepole:apply DATABASE=queue
+
+echo "Running tests..."
+bin/rspec --format documentation
+
+echo "Running RuboCop..."
+bin/rubocop
+
+echo "Running Brakeman..."
+bin/brakeman -q -w2
+
+echo "=== CI simulation completed successfully ==="
