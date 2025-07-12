@@ -102,30 +102,14 @@ jobs:
       env:
         RAILS_ENV: test
         DATABASE_URL: postgres://postgres:postgres@localhost:5432/app_base_test
-        BACKTRACE: 1
         CI: true
-        CHROME_DRIVER_PATH: /usr/bin/chromedriver
-      run: |
-        # Show database configuration
-        bin/rails runner "puts Rails.configuration.database_configuration.to_yaml"
-        
-        # Run tests with more verbose output
-        bin/rspec --format documentation
+      run: bin/rspec
     
     - name: Run RuboCop
       run: bin/rubocop
     
     - name: Run Brakeman
       run: bin/brakeman -q -w2
-    
-    # Debug information on failure
-    - name: Show test logs on failure
-      if: failure()
-      run: |
-        echo "=== Test log ==="
-        cat log/test.log || echo "No test log found"
-        echo "=== Database status ==="
-        psql -h localhost -U postgres -c "\l" || echo "Could not list databases"
     
     # Update Slack notification - Failed
     - name: Update Slack notification - Failed
