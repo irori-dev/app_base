@@ -7,7 +7,7 @@ class Users::PasswordResetsController < Users::BaseController
   def new; end
 
   def create
-    user = User::Core.find_by(email: params[:email])
+    user = User::Core.find_by(email: create_params[:email])
     if user.present?
       password_reset = user.password_resets.create!
       password_reset.send_password_reset_email
@@ -19,13 +19,13 @@ class Users::PasswordResetsController < Users::BaseController
   def edit; end
 
   def update
-    raise 'パスワードが一致しません' if params[:password] != params[:password_confirmation]
+    raise 'パスワードが一致しません' if update_params[:password] != update_params[:password_confirmation]
 
-    password_reset = User::PasswordReset.not_expired.not_reset.detected_by(params[:token])
+    password_reset = User::PasswordReset.not_expired.not_reset.detected_by(update_params[:token])
     raise '期限切れ、もしくは無効なトークンです' if password_reset.blank?
 
     ActiveRecord::Base.transaction do
-      password_reset.user.update!(password: params[:password])
+      password_reset.user.update!(password: update_params[:password])
       password_reset.reset!
     end
 
@@ -34,6 +34,16 @@ class Users::PasswordResetsController < Users::BaseController
   rescue StandardError => e
     flash.now[:alert] = e.message
     render :edit, status: :unprocessable_entity
+  end
+
+  private
+
+  def create_params
+    params.permit(:email)
+  end
+
+  def update_params
+    params.permit(:password, :password_confirmation, :token)
   end
 
 end

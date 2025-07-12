@@ -4,6 +4,13 @@ class ApplicationController < ActionController::Base
 
   before_action :prepare_exception_notifier
 
+  # Authenticatable concern methods
+  alias require_user! require_resource!
+  alias current_user current_resource
+  alias user_signed_in? resource_signed_in?
+
+  helper_method :current_user, :user_signed_in?
+
   private
 
   def prepare_exception_notifier
@@ -12,11 +19,6 @@ class ApplicationController < ActionController::Base
       app: 'AppBase',
     }
   end
-
-  # Authenticatable concern methods
-  alias require_user! require_resource!
-  alias current_user current_resource
-  alias user_signed_in? resource_signed_in?
 
   def require_not_user!
     return unless user_signed_in?

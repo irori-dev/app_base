@@ -44,3 +44,6 @@
 /vendor/bundle
 
 /config/credentials/production.key
+
+# Bullet log
+/log/bullet.log

@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # Health check endpoint
+  get "health" => "health#index"
+  
   namespace :admins do
     resource :session, only: %i[new create destroy]
     resources :users, only: %i[index show] do

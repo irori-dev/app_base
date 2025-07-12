@@ -76,6 +76,18 @@ Hotwire(Turbo/Stimulus) と importmap を利用しているため
 
 `rails credentials` を利用します。`config/master.key` を取得して配置してください。
 
+### N+1クエリ検出
+
+開発環境では [Bullet](https://github.com/flyerhzm/bullet) が有効になっており、
+N+1クエリや不要なeager loadingを自動検出します。
+
+- ブラウザでアラート表示
+- コンソールログに出力
+- `log/bullet.log` にログ記録
+- ページ下部にサマリー表示
+
+問題が検出された場合は、適切な `includes` を追加してください。
+
 ## Debug
 
 VS Code でのデバッグ方法は
@@ -86,3 +98,63 @@ VS Code でのデバッグ方法は
 
 `users` と `admins` のリソースを簡易的に実装しています。
 ログインやメール送信の仕組みなどを確認するサンプルとして利用してください。
+
+### サンプルデータ
+
+開発環境では以下のコマンドでサンプルデータを投入できます：
+
+```bash
+bin/rails db:seed
+```
+
+デフォルトのログイン情報：
+- 管理者: `admin@example.com` / `password123`
+- ユーザー: `user@example.com` / `password123`
+
+## ヘルスチェック
+
+アプリケーションの健全性を確認するエンドポイント：
+
+```bash
+GET /health
+```
+
+レスポンス例：
+```json
+{
+  "status": "healthy",
+  "timestamp": "2024-01-01T12:00:00+09:00",
+  "checks": {
+    "database": { "status": "ok", "message": "Database is responding" },
+    "cache": { "status": "ok", "message": "Cache is working" },
+    "queue": { "status": "ok", "message": "Queue database is responding" }
+  }
+}
+```
+
+## CI/CD
+
+GitHub Actionsによる自動テストが設定されています：
+- プッシュ/PR時に自動実行（main, developブランチ）
+- RSpec、RuboCop、Brakemanの実行
+- Dockerイメージのビルドテスト
+
+### Slack通知（オプション）
+
+CI実行結果をSlackに通知する場合は、以下のSecretsを設定してください：
+- `SLACK_BOT_TOKEN`: Slack Bot User OAuth Token
+- `SLACK_CHANNEL_ID`: 通知先のチャンネルID
+
+Secretsが設定されていない場合、Slack通知はスキップされます。
+
+## コントリビューション
+
+[CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
+
+## 行動規範
+
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) を参照してください。
+
+## アーキテクチャ
+
+詳細な技術設計については [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) を参照してください。

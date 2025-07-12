@@ -1,14 +1,14 @@
 class Admins::UsersController < Admins::BaseController
 
-  def index
-    @search = User::Core.ransack(params[:q])
-    @search.sorts = 'id desc' if @search.sorts.empty?
+  include Searchable
 
-    @users = @search.result.includes(:password_resets, :email_changes).page(params[:page])
+  def index
+    @users = setup_search(User::Core, includes: %i[password_resets email_changes])
+      .page(params[:page])
   end
 
   def show
-    @user = User::Core.find(params[:id])
+    @user = User::Core.includes(:password_resets, :email_changes).find(params[:id])
   end
 
   def insert

@@ -36,6 +36,21 @@ RSpec.configure do |config|
   config.include ViewComponent::TestHelpers, type: :component
   config.include Capybara::RSpecMatchers, type: :component
   config.include ActiveSupport::Testing::TimeHelpers
+  config.include ActiveJob::TestHelper, type: :request
+
+  config.before(:each) do
+    ActiveJob::Base.queue_adapter = :test
+  end
+
+  # Disable Bullet in test environment
+  config.before(:each) do
+    Bullet.enable = false if defined?(Bullet)
+  end
+
+  config.after(:each) do
+    Bullet.enable = false if defined?(Bullet)
+  end
+
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   # config.fixture_path = "#{::Rails.root}/spec/fixtures"
 

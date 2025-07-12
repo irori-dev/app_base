@@ -1,0 +1,18 @@
+ja:
+  time:
+    formats:
+      default: "%Y年%m月%d日(%a) %H時%M分%S秒 %z"
+      short: "%Y/%m/%d %H:%M"
+      long: "%Y年%m月%d日(%a) %H時%M分%S秒 %Z"
+  date:
+    formats:
+      default: "%Y/%m/%d"
+      short: "%m/%d"
+      long: "%Y年%m月%d日(%a)"
+  activerecord:
+    errors:
+      messages:
+        record_invalid: "バリデーションに失敗しました: %{errors}"
+  errors:
+    messages:
+      confirmation: "が一致しません"

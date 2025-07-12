@@ -7,12 +7,14 @@ class Admins::BaseController < ApplicationController
 
   layout 'admins'
 
-  private
-
   # Authenticatable concern methods
   alias require_admin! require_resource!
   alias current_admin current_resource
   alias admin_signed_in? resource_signed_in?
+
+  helper_method :current_admin, :admin_signed_in?
+
+  private
 
   def resource_class
     Admin

@@ -1,12 +1,11 @@
 class Admins::AdminsController < Admins::BaseController
 
+  include Searchable
+
   before_action :require_not_current_admin!, only: %i[edit update destroy]
 
   def index
-    @search = Admin.ransack(params[:q])
-    @search.sorts = 'id desc' if @search.sorts.empty?
-
-    @admins = @search.result.page(params[:page])
+    @admins = setup_search(Admin).page(params[:page])
   end
 
   def new

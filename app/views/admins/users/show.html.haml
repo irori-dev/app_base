@@ -8,4 +8,39 @@
       = render 'svgs/chevron_right'
     %span
       = @user.email
+  
+  .bg-white.rounded-lg.shadow.p-6
+    %h2.text-xl.font-bold.mb-4 ユーザー情報
+    %dl.grid.grid-cols-2.gap-4
+      %dt.font-semibold ID
+      %dd= @user.id
+      %dt.font-semibold メールアドレス
+      %dd= @user.email
+      %dt.font-semibold 作成日時
+      %dd= l(@user.created_at, format: :short)
+  
+  - if @user.password_resets.any?
+    .bg-white.rounded-lg.shadow.p-6
+      %h2.text-xl.font-bold.mb-4 パスワードリセット履歴
+      %ul.space-y-2
+        - @user.password_resets.each do |reset|
+          %li.border-b.pb-2
+            %span.text-sm.text-gray-600= l(reset.created_at, format: :short)
+            - if reset.reset_at?
+              %span.ml-2.text-sm.text-green-600 リセット済
+            - else
+              %span.ml-2.text-sm.text-yellow-600 未使用
+  
+  - if @user.email_changes.any?
+    .bg-white.rounded-lg.shadow.p-6
+      %h2.text-xl.font-bold.mb-4 メールアドレス変更履歴
+      %ul.space-y-2
+        - @user.email_changes.each do |change|
+          %li.border-b.pb-2
+            %span.text-sm.text-gray-600= l(change.created_at, format: :short)
+            %span.ml-2= change.email
+            - if change.changed_at?
+              %span.ml-2.text-sm.text-green-600 変更済
+            - else
+              %span.ml-2.text-sm.text-yellow-600 未変更
 

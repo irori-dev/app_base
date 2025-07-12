@@ -2,7 +2,7 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
 ARG RUBY_VERSION=3.4.4
-ARG BUNDLER_VERSION=2.6.8
+ARG BUNDLER_VERSION=2.6.9
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
 ARG BUNDLER_VERSION
 ARG RAILS_MASTER_KEY
@@ -28,7 +28,7 @@ ENV BUNDLE_DEPLOYMENT="1" \
 
 # Throw-away build stage to reduce size of final image
 FROM base as build
-ARG BUNDLER_VERSION=2.6.8
+ARG BUNDLER_VERSION=2.6.9
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
@@ -58,7 +58,7 @@ RUN SECRET_KEY_BASE_DUMMY=1 RAILS_ENV=${RAILS_ENV} DATABASE_URL=postgresql://dum
 
 # Final stage for app image
 FROM base
-ARG BUNDLER_VERSION=2.6.8
+ARG BUNDLER_VERSION=2.6.9
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
