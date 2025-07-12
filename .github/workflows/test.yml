@@ -82,5 +82,5 @@ jobs:
     
     - name: Test Docker image
       run: |
-        docker run --rm app-base:test rails --version
+        docker run --rm app-base:test ./bin/rails --version
         docker run --rm app-base:test ruby --version
