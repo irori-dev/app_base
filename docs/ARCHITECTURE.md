@@ -4,7 +4,7 @@
 
 ### バックエンド
 - **Ruby 3.4.4** / **Rails 8.0.2**
-- **PostgreSQL 16** - メインデータベース
+- **PostgreSQL 16** - 全環境で使用（開発、テスト、本番）
 - **Solid Suite** - Redis/Sidekiqの代替
   - Solid Cache - キャッシュストレージ
   - Solid Queue - バックグラウンドジョブ

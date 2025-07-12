@@ -74,23 +74,31 @@ jobs:
       env:
         RAILS_ENV: test
         DATABASE_URL: postgres://postgres:postgres@localhost:5432/app_base_test
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        PGPASSWORD: postgres
       run: |
-        bundle exec rails db:create
-        bundle exec rails ridgepole:apply DATABASE=primary
-        bundle exec rails ridgepole:apply DATABASE=cache
-        bundle exec rails ridgepole:apply DATABASE=queue
+        # Create all databases
+        createdb -h localhost -U postgres app_base_test || true
+        createdb -h localhost -U postgres cache_test || true
+        createdb -h localhost -U postgres queue_test || true
+        
+        # Apply schemas
+        bin/rails ridgepole:apply DATABASE=primary
+        bin/rails ridgepole:apply DATABASE=cache
+        bin/rails ridgepole:apply DATABASE=queue
     
     - name: Run tests
       env:
         RAILS_ENV: test
         DATABASE_URL: postgres://postgres:postgres@localhost:5432/app_base_test
-      run: bundle exec rspec
+      run: bin/rspec
     
     - name: Run RuboCop
-      run: bundle exec rubocop
+      run: bin/rubocop
     
     - name: Run Brakeman
-      run: bundle exec brakeman -q -w2
+      run: bin/brakeman -q -w2
     
     # Update Slack notification - Failed
     - name: Update Slack notification - Failed

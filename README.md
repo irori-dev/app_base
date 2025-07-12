@@ -32,9 +32,12 @@ bin/dev
 
 ### Database
 
-デフォルトで PostgreSQL を使用し、マイグレーション管理には
+PostgreSQL を使用し、マイグレーション管理には
 [ridgepole](https://github.com/ridgepole/ridgepole) を採用しています。
 `db/schema/` 以下に `.schema` ファイルを置くとスキーマが適用されます。
+
+開発環境・テスト環境ともにPostgreSQLが必要です。
+Docker環境では自動的に設定されます。
 
 ### 非同期処理
 

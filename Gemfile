@@ -51,7 +51,6 @@ group :development, :test do
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
   gem "rubocop"
-  gem "sqlite3", ">= 2.1"
 end
 
 group :development do

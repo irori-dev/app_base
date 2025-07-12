@@ -21,20 +21,23 @@ development:
 
 test:
   primary:
-    adapter: sqlite3
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-    timeout: 5000
-    database: storage/test.primary.sqlite3
+    <<: *default
+    database: app_test
+    <% if ENV['DATABASE_URL'].present? %>
+    url: <%= ENV['DATABASE_URL'] %>
+    <% end %>
   cache:
-    adapter: sqlite3
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-    timeout: 5000
-    database: storage/test.cache.sqlite3
+    <<: *default
+    database: cache_test
+    <% if ENV['DATABASE_URL'].present? %>
+    url: <%= ENV['DATABASE_URL'].sub(/app_base_test/, 'cache_test') %>
+    <% end %>
   queue:
-    adapter: sqlite3
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-    timeout: 5000
-    database: storage/test.queue.sqlite3
+    <<: *default
+    database: queue_test
+    <% if ENV['DATABASE_URL'].present? %>
+    url: <%= ENV['DATABASE_URL'].sub(/app_base_test/, 'queue_test') %>
+    <% end %>
 
 staging:
   primary:
