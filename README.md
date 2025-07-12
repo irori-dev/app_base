@@ -115,24 +115,45 @@ bin/rails db:seed
 
 ## ヘルスチェック
 
-アプリケーションの健全性を確認するエンドポイント：
+```bash
+GET /up
+```
+
+Rails標準のヘルスチェックエンドポイント：
+- アプリケーションが正常に動作している場合、200 OKを返す
+- レスポンスは緑背景のシンプルなHTML
+- ロードバランサーやモニタリングツールでの使用に最適
+
+## エラーテスト（管理者権限必須）
+
+アラート通知のテスト用に、意図的にエラーを発生させるエンドポイントを提供：
 
 ```bash
-GET /health
+GET /admins/errors/trigger?type=TYPE
 ```
 
-レスポンス例：
-```json
-{
-  "status": "healthy",
-  "timestamp": "2024-01-01T12:00:00+09:00",
-  "checks": {
-    "database": { "status": "ok", "message": "Database is responding" },
-    "cache": { "status": "ok", "message": "Cache is working" },
-    "queue": { "status": "ok", "message": "Queue database is responding" }
-  }
-}
+利用可能なエラータイプ：
+- `standard` (デフォルト): StandardError
+- `runtime`: RuntimeError
+- `argument`: ArgumentError
+- `not_found`: ActiveRecord::RecordNotFound
+- `timeout`: Timeout::Error
+- `database`: データベース接続エラー
+- `zero_division`: ゼロ除算エラー
+- `nil`: NoMethodError
+
+例：
+```bash
+# 標準エラーを発生させる
+curl -H "Cookie: session_id=your_admin_session" http://localhost:3000/admins/errors/trigger
+
+# タイムアウトエラーを発生させる
+curl -H "Cookie: session_id=your_admin_session" http://localhost:3000/admins/errors/trigger?type=timeout
 ```
+
+**注意**: 
+- このエンドポイントは全環境で利用可能ですが、管理者権限が必要です
+- 本番環境では特に慎重に使用してください
 
 ## CI/CD
 
