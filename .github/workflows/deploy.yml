@@ -1,4 +1,15 @@
-name: Build & Push (OIDC)
+name: Build & Deploy Application
+
+# このワークフローは継続的デプロイ専用
+# インフラセットアップは別のワークフロー（setup-infrastructure.yml）で実行
+
+# Required GitHub Secrets:
+# - AWS_ROLE_ARN: ARN of the IAM role for OIDC authentication
+# - AWS_REGION: AWS region (e.g., ap-northeast-1)
+# - AWS_ACCOUNT_ID: AWS account ID
+# - ECR_REPOSITORY: ECR repository name (e.g., workshop-app/app-name)
+# - SLACK_BOT_TOKEN: Slack bot token (optional)
+# - SLACK_CHANNEL_ID: Slack channel ID (optional)
 
 on:
   push:
@@ -10,9 +21,9 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  # アプリケーションのビルド・継続的デプロイ
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -49,14 +60,72 @@ jobs:
           REPO:     ${{ secrets.ECR_REPOSITORY }}
           TAG:      ${{ github.sha }}
         run: |
+          echo "🐳 Building Docker image..."
           docker build -t $REGISTRY/$REPO:$TAG .
           docker build -t $REGISTRY/$REPO:latest .
           docker push   $REGISTRY/$REPO:$TAG
           docker push   $REGISTRY/$REPO:latest
+          
+          echo "IMAGE_URI=$REGISTRY/$REPO:$TAG" >> $GITHUB_ENV
+          echo "✅ Docker image pushed: $REGISTRY/$REPO:$TAG"
 
-      # Slack notification (optional)
+      # インフラ存在確認
+      - name: Check if infrastructure exists
+        id: check-infra
+        run: |
+          echo "🔍 Checking if infrastructure exists..."
+          
+          INFRA_STACK_NAME="${{ github.event.repository.name }}-prod-infra"
+          
+          if aws cloudformation describe-stacks --stack-name $INFRA_STACK_NAME >/dev/null 2>&1; then
+            echo "✅ Infrastructure stack exists: $INFRA_STACK_NAME"
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "infra-stack-name=$INFRA_STACK_NAME" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Infrastructure stack not found: $INFRA_STACK_NAME"
+            echo "Please run 'Setup Infrastructure (Manual Only)' workflow first"
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "::warning::Infrastructure not found. Deployment will be skipped."
+            echo "📋 Next steps:"
+            echo "1. Run 'Setup Infrastructure (Manual Only)' workflow from Actions tab"
+            echo "2. Update ECR_REPOSITORY secret if needed"
+            echo "3. Push code again to trigger automatic deployment"
+          fi
+
+      # アプリケーションデプロイ（分離されたテンプレートを使用）
+      - name: Deploy Application
+        if: ${{ steps.check-infra.outputs.exists == 'true' }}
+        run: |
+          echo "🚀 Deploying application with separated template..."
+          
+          aws cloudformation deploy \
+            --template-file infra/apps/app-base/app-deploy.yaml \
+            --stack-name ${{ github.event.repository.name }}-app \
+            --parameter-overrides \
+              AppName=${{ github.event.repository.name }} \
+              ImageUri=$IMAGE_URI \
+              InfraStackName=${{ steps.check-infra.outputs.infra-stack-name }} \
+              DatabaseUrlArn=arn:aws:ssm:${{ secrets.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/${{ github.event.repository.name }}/prod/DATABASE_URL \
+              CacheDatabaseUrlArn=arn:aws:ssm:${{ secrets.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/${{ github.event.repository.name }}/prod/CACHE_DATABASE_URL \
+              QueueDatabaseUrlArn=arn:aws:ssm:${{ secrets.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/${{ github.event.repository.name }}/prod/QUEUE_DATABASE_URL \
+              RailsMasterKeyArn=arn:aws:ssm:${{ secrets.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/${{ github.event.repository.name }}/prod/RAILS_MASTER_KEY \
+            --capabilities CAPABILITY_IAM
+          
+          echo "✅ Application deployment completed"
+
+      - name: Wait for ECS service stability
+        if: ${{ steps.check-infra.outputs.exists == 'true' }}
+        run: |
+          echo "⏳ Waiting for ECS service to be stable..."
+          aws ecs wait services-stable \
+            --cluster workshop-app-prod-cluster \
+            --services ${{ github.event.repository.name }}-service
+          
+          echo "✅ Service is now stable"
+ 
+      # Slack notification
       - name: Notify Slack on success
-        if: ${{ success() && env.SLACK_BOT_TOKEN != '' }}
+        if: ${{ success() && steps.check-infra.outputs.exists == 'true' && env.SLACK_BOT_TOKEN != '' }}
         uses: slackapi/slack-github-action@v1.23.0
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -64,19 +133,63 @@ jobs:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
           payload: |
             {
-              "text": "ECR Push Success: ${{ github.repository }}",
+              "text": "Deploy Success: ${{ github.repository }}",
               "attachments": [
                 {
                   "color": "good",
                   "fields": [
                     {
                       "title": "Image",
-                      "value": "${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}",
+                      "value": "${{ env.IMAGE_URI }}",
                       "short": true
                     },
                     {
                       "title": "Branch",
                       "value": "${{ github.ref_name }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Infrastructure",
+                      "value": "No changes (continuous deployment)",
+                      "short": true
+                    },
+                    {
+                      "title": "Application URL",
+                      "value": "https://${{ github.event.repository.name }}.workshop-app.net",
+                      "short": true
+                    }
+                  ]
+                }
+              ]
+            }
+
+      - name: Notify Slack on infrastructure missing
+        if: ${{ steps.check-infra.outputs.exists == 'false' && env.SLACK_BOT_TOKEN != '' }}
+        uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          payload: |
+            {
+              "text": "Infrastructure Setup Required: ${{ github.repository }}",
+              "attachments": [
+                {
+                  "color": "warning",
+                  "fields": [
+                    {
+                      "title": "Status",
+                      "value": "Infrastructure not found",
+                      "short": true
+                    },
+                    {
+                      "title": "Action Required",
+                      "value": "Run 'Setup Infrastructure (Manual Only)' workflow",
+                      "short": true
+                    },
+                    {
+                      "title": "Repository",
+                      "value": "${{ github.repository }}",
                       "short": true
                     }
                   ]
@@ -93,7 +206,7 @@ jobs:
           channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
           payload: |
             {
-              "text": "ECR Push Failed: ${{ github.repository }}",
+              "text": "Deploy Failed: ${{ github.repository }}",
               "attachments": [
                 {
                   "color": "danger",
@@ -106,6 +219,11 @@ jobs:
                     {
                       "title": "Branch",
                       "value": "${{ github.ref_name }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Infrastructure Status",
+                      "value": "${{ steps.check-infra.outputs.exists == 'true' && 'Available' || 'Missing' }}",
                       "short": true
                     },
                     {

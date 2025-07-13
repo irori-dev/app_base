@@ -1,0 +1,142 @@
+name: Setup Infrastructure (Manual Only)
+
+# このワークフローは手動実行のみ
+# 新しいアプリケーションのインフラを初回セットアップするために使用
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: 'Application name'
+        required: true
+        type: string
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'prod'
+        type: choice
+        options:
+          - prod
+          - staging
+      hostname:
+        description: 'Application hostname'
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  setup-infrastructure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Create SSM Parameters
+        run: |
+          echo "🔑 Creating SSM parameters for ${{ inputs.app_name }}..."
+          
+          # 実際のデータベース接続情報を設定
+          aws ssm put-parameter \
+            --name "/${{ inputs.app_name }}/${{ inputs.environment }}/DATABASE_URL" \
+            --value "${{ secrets.DATABASE_URL }}" \
+            --type "SecureString" \
+            --overwrite || true
+          
+          aws ssm put-parameter \
+            --name "/${{ inputs.app_name }}/${{ inputs.environment }}/CACHE_DATABASE_URL" \
+            --value "${{ secrets.CACHE_DATABASE_URL }}" \
+            --type "SecureString" \
+            --overwrite || true
+          
+          aws ssm put-parameter \
+            --name "/${{ inputs.app_name }}/${{ inputs.environment }}/QUEUE_DATABASE_URL" \
+            --value "${{ secrets.QUEUE_DATABASE_URL }}" \
+            --type "SecureString" \
+            --overwrite || true
+          
+          aws ssm put-parameter \
+            --name "/${{ inputs.app_name }}/${{ inputs.environment }}/RAILS_MASTER_KEY" \
+            --value "${{ secrets.RAILS_MASTER_KEY }}" \
+            --type "SecureString" \
+            --overwrite || true
+          
+          echo "✅ SSM parameters created"
+
+      - name: Deploy Infrastructure
+        run: |
+          echo "🏗️ Deploying infrastructure for ${{ inputs.app_name }}..."
+          
+          aws cloudformation deploy \
+            --template-file infra/apps/app-base/infra-base.yaml \
+            --stack-name ${{ inputs.app_name }}-${{ inputs.environment }}-infra \
+            --parameter-overrides \
+              AppName=${{ inputs.app_name }} \
+              AppHostName=${{ inputs.hostname }} \
+            --capabilities CAPABILITY_NAMED_IAM
+          
+          echo "✅ Infrastructure deployment completed"
+
+      - name: Create ECR Repository
+        run: |
+          echo "🐳 Creating ECR repository..."
+          
+          aws ecr create-repository \
+            --repository-name workshop-app/${{ inputs.environment }}/${{ inputs.app_name }} \
+            --region ${{ secrets.AWS_REGION }} || echo "Repository might already exist"
+          
+          echo "✅ ECR repository ready"
+
+      - name: Setup completion instructions
+        run: |
+          echo "📋 Infrastructure setup completed!"
+          echo ""
+          echo "Next steps:"
+          echo "1. Update your repository secrets:"
+          echo "   - ECR_REPOSITORY: workshop-app/${{ inputs.environment }}/${{ inputs.app_name }}"
+          echo "2. Push your code to main branch to trigger automatic deployment"
+          echo "3. Your application will be available at: https://${{ inputs.hostname }}"
+          echo ""
+          echo "Repository secrets to add/update:"
+          echo "ECR_REPOSITORY=workshop-app/${{ inputs.environment }}/${{ inputs.app_name }}"
+
+      - name: Notify Slack on success
+        if: ${{ success() && env.SLACK_BOT_TOKEN != '' }}
+        uses: slackapi/slack-github-action@v1.23.0
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          payload: |
+            {
+              "text": "Infrastructure Setup Success: ${{ inputs.app_name }}",
+              "attachments": [
+                {
+                  "color": "good",
+                  "fields": [
+                    {
+                      "title": "Application",
+                      "value": "${{ inputs.app_name }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Environment",
+                      "value": "${{ inputs.environment }}",
+                      "short": true
+                    },
+                    {
+                      "title": "Hostname",
+                      "value": "${{ inputs.hostname }}",
+                      "short": true
+                    }
+                  ]
+                }
+              ]
+            }
