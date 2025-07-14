@@ -74,12 +74,37 @@ jobs:
         run: |
           echo "🏗️ Deploying infrastructure for ${{ inputs.app_name }}..."
           
+          # ALBリスナールールの優先度を自動取得
+          ALB_LISTENER_ARN="arn:aws:elasticloadbalancing:ap-northeast-1:435917083888:listener/app/workshop-app-prod-alb/7aa0910a0c85959e/afe92482bb237c19"
+          
+          echo "📋 Finding next available priority for ALB listener rule..."
+          EXISTING_PRIORITIES=$(aws elbv2 describe-rules \
+            --listener-arn $ALB_LISTENER_ARN \
+            --query 'Rules[?Priority!=`default`].Priority' \
+            --output text | tr '\t' '\n' | sort -n)
+          
+          NEXT_PRIORITY=1
+          for priority in $EXISTING_PRIORITIES; do
+            if [ "$priority" -eq "$NEXT_PRIORITY" ]; then
+              NEXT_PRIORITY=$((NEXT_PRIORITY + 1))
+            else
+              break
+            fi
+          done
+          
+          echo "🎯 Using priority: $NEXT_PRIORITY"
+          
           aws cloudformation deploy \
             --template-file infra/apps/app-base/infra-base.yaml \
             --stack-name ${{ inputs.app_name }}-${{ inputs.environment }}-infra \
             --parameter-overrides \
               AppName=${{ inputs.app_name }} \
               AppHostName=${{ inputs.hostname }} \
+              ListenerRulePriority=$NEXT_PRIORITY \
+              DatabaseUrlArn=arn:aws:ssm:${{ secrets.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/${{ inputs.app_name }}/${{ inputs.environment }}/DATABASE_URL \
+              CacheDatabaseUrlArn=arn:aws:ssm:${{ secrets.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/${{ inputs.app_name }}/${{ inputs.environment }}/CACHE_DATABASE_URL \
+              QueueDatabaseUrlArn=arn:aws:ssm:${{ secrets.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/${{ inputs.app_name }}/${{ inputs.environment }}/QUEUE_DATABASE_URL \
+              RailsMasterKeyArn=arn:aws:ssm:${{ secrets.AWS_REGION }}:${{ secrets.AWS_ACCOUNT_ID }}:parameter/${{ inputs.app_name }}/${{ inputs.environment }}/RAILS_MASTER_KEY \
             --capabilities CAPABILITY_NAMED_IAM
           
           echo "✅ Infrastructure deployment completed"
@@ -94,18 +119,32 @@ jobs:
           
           echo "✅ ECR repository ready"
 
+      - name: Update repository secrets automatically
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🔧 Updating repository secrets..."
+          
+          # ECR_REPOSITORY secretを自動更新
+          ECR_REPO="workshop-app/${{ inputs.environment }}/${{ inputs.app_name }}"
+          
+          gh secret set ECR_REPOSITORY --body "$ECR_REPO"
+          
+          echo "✅ Repository secrets updated automatically:"
+          echo "ECR_REPOSITORY=$ECR_REPO"
+
       - name: Setup completion instructions
         run: |
           echo "📋 Infrastructure setup completed!"
           echo ""
-          echo "Next steps:"
-          echo "1. Update your repository secrets:"
-          echo "   - ECR_REPOSITORY: workshop-app/${{ inputs.environment }}/${{ inputs.app_name }}"
-          echo "2. Push your code to main branch to trigger automatic deployment"
-          echo "3. Your application will be available at: https://${{ inputs.hostname }}"
+          echo "✅ Repository secrets have been automatically updated"
+          echo "🚀 Ready to deploy! Push your code to main branch to trigger automatic deployment"
+          echo "🌐 Your application will be available at: https://${{ inputs.hostname }}"
           echo ""
-          echo "Repository secrets to add/update:"
-          echo "ECR_REPOSITORY=workshop-app/${{ inputs.environment }}/${{ inputs.app_name }}"
+          echo "Created resources:"
+          echo "- CloudFormation Stack: ${{ inputs.app_name }}-${{ inputs.environment }}-infra"
+          echo "- ECR Repository: workshop-app/${{ inputs.environment }}/${{ inputs.app_name }}"
+          echo "- SSM Parameters: /${{ inputs.app_name }}/${{ inputs.environment }}/*"
 
       - name: Notify Slack on success
         if: ${{ success() && env.SLACK_BOT_TOKEN != '' }}

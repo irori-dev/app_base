@@ -9,6 +9,10 @@ Parameters:
     Default: 3000
   AppHostName:
     Type: String
+  ListenerRulePriority:
+    Type: Number
+    Default: 100
+    Description: ALB Listener Rule Priority (will be auto-incremented if conflicts)
 
   # 既存リソース
   AlbListenerArn:
@@ -108,6 +112,8 @@ Resources:
     Properties:
       ListenerArn: 
         Ref: AlbListenerArn
+      Priority:
+        Ref: ListenerRulePriority
       Actions:
         - Type: forward
           ForwardConfig:
