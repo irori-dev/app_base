@@ -56,7 +56,7 @@ jobs:
 
       # Slack notification (optional)
       - name: Notify Slack on success
-        if: ${{ success() && env.SLACK_BOT_TOKEN != '' }}
+        if: ${{ success() && secrets.SLACK_BOT_TOKEN != '' }}
         uses: slackapi/slack-github-action@v2.1.1
         with:
           method: chat.postMessage
@@ -75,7 +75,7 @@ jobs:
                     short: true
 
       - name: Notify Slack on failure
-        if: ${{ failure() && env.SLACK_BOT_TOKEN != '' }}
+        if: ${{ failure() && secrets.SLACK_BOT_TOKEN != '' }}
         uses: slackapi/slack-github-action@v2.1.1
         with:
           method: chat.postMessage
